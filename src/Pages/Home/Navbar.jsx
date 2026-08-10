@@ -1,108 +1,115 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-scroll";
+import data from "../../data/index.json";
+import { Mail } from "../../components/Icons";
 
-function Navbar() {
-  const [navActive, setNavActive] = useState(false);
+const SECTIONS = [
+  { to: "home", label: "home" },
+  { to: "work", label: "work" },
+  { to: "projects", label: "projects" },
+  { to: "about", label: "about" },
+];
 
-  const toggleNav = () => {
-    setNavActive(!navActive);
-  };
+const scrollProps = {
+  spy: true,
+  smooth: true,
+  offset: -72,
+  duration: 500,
+  activeClass: "is-active",
+};
 
-  const closeMenu = () => {
-    setNavActive(false);
-  };
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  // Close the mobile menu when the viewport grows past the breakpoint.
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 500) {
-        closeMenu;
-      }
+      if (window.innerWidth > 900) closeMenu();
     };
-
     window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [closeMenu]);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 12);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    if (window.innerWidth <= 1200) {
-      closeMenu;
-    }
-  }, []);
+    const handleKey = (event) => {
+      if (event.key === "Escape") closeMenu();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [closeMenu]);
+
+  // Prevent the page behind the open drawer from scrolling.
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   return (
-    <nav className={`navbar ${navActive ? "active" : ""}`}>
-     
-      <a
-        className={`nav__hamburger ${navActive ? "active" : ""}`}
-        onClick={toggleNav}
-      >
-        <span className="nav__hamburger__line"></span>
-        <span className="nav__hamburger__line"></span>
-        <span className="nav__hamburger__line"></span>
-      </a>
-      <div className={`navbar--items ${navActive ? "active" : ""}`}>
-        <ul>
-          <li>
-            <Link
-              onClick={closeMenu}
-              activeClass="navbar--active-content"
-              spy={true}
-              smooth={true}
-              offset={-70}
-              duration={500}
-              to="heroSection"
-              className="navbar--content"
-            >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              onClick={closeMenu}
-              activeClass="navbar--active-content"
-              spy={true}
-              smooth={true}
-              offset={-70}
-              duration={500}
-              to="MyPortfolio"
-              className="navbar--content"
-            >
-              Portfolio
-            </Link>
-          </li>
-          <li>
-            <Link
-              onClick={closeMenu}
-              activeClass="navbar--active-content"
-              spy={true}
-              smooth={true}
-              offset={-70}
-              duration={500}
-              to="AboutMe"
-              className="navbar--content"
-            >
-              About Me
-            </Link>
-          </li>
-        </ul>
-      </div>
-      <Link
-        onClick={closeMenu}
-        activeClass="navbar--active-content"
-        spy={true}
-        smooth={true}
-        offset={-70}
-        duration={500}
-        to="Contact"
-        className="btn btn-outline-primary"
-      >
-        Contact Me
-      </Link>
-    </nav>
+    <header className={`nav ${scrolled ? "is-scrolled" : ""}`}>
+      <nav className="nav__inner" aria-label="Primary">
+        <Link
+          {...scrollProps}
+          to="home"
+          className="nav__brand"
+          onClick={closeMenu}
+          aria-label="Aman Yadav — back to top"
+        >
+          <span className="nav__monogram">AY</span>
+          <span className="nav__brand-name">{data.profile.name}</span>
+        </Link>
+
+        <button
+          type="button"
+          className={`nav__burger ${menuOpen ? "is-open" : ""}`}
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-expanded={menuOpen}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+        <div className={`nav__menu ${menuOpen ? "is-open" : ""}`}>
+          <ul className="nav__list">
+            {SECTIONS.map((section) => (
+              <li key={section.to}>
+                <Link
+                  {...scrollProps}
+                  to={section.to}
+                  className="nav__link"
+                  onClick={closeMenu}
+                >
+                  {section.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <Link
+            {...scrollProps}
+            to="contact"
+            activeClass=""
+            className="btn btn--ghost nav__cta"
+            onClick={closeMenu}
+          >
+            <Mail size={15} />
+            get in touch
+          </Link>
+        </div>
+      </nav>
+    </header>
   );
 }
-
-export default Navbar;

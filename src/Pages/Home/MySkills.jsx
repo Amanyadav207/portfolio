@@ -2,23 +2,33 @@ import data from "../../data/index.json";
 
 export default function MySkills() {
   return (
-    <section className="skills--section" id="mySkills">
-      <div className="portfolio--container">
-        <p className="section--title">My Skills</p>
-        <h2 className="skills--section--heading">My Expertise</h2>
-      </div>
-      <div className="skills--section--container">
-        {data?.skills?.map((item, index) => (
-          <div key={index} className="skills--section--card">
-            <div className="skills--section--img">
-              <img src={item.src} alt="Product Chain" />
+    <section id="skills" className="section">
+      <div className="shell">
+        <header className="section__head" data-reveal>
+          <span className="section__index">03</span>
+          <h2 className="section__title">Toolkit</h2>
+          <p className="section__sub">What I reach for, grouped by the job it does.</p>
+        </header>
+
+        <div className="skills">
+          {data.skills.map((group, index) => (
+            <div
+              key={group.group}
+              className="skillgroup"
+              data-reveal
+              style={{ "--delay": `${index * 40}ms` }}
+            >
+              <h3 className="skillgroup__title">{group.group}</h3>
+              <ul className="tags">
+                {group.items.map((item) => (
+                  <li key={item} className="tag">
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="skills--section--card--content">
-              <h3 className="skills--section--title">{item.title}</h3>
-              <p className="skills--section--description">{item.description}</p>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -1,53 +1,65 @@
 import data from "../../data/index.json";
+import { ArrowUpRight } from "../../components/Icons";
 
 export default function MyPortfolio() {
+  const github = data.socials.find((s) => s.id === "github");
+
   return (
-    <section className="portfolio--section" id="MyPortfolio">
-      <div className="portfolio--container-box">
-        <div className="portfolio--container">
-          <p className="sub--title">Recent Projects</p>
-          <h2 className="section--heading">My Portfolio</h2>
-        </div>
-        <div>
-          <a href="https://github.com/Amanyadav207">
-            <button className="btn btn-github">
-              Visit My GitHub
-            </button>
-        </a>
-        </div>
-      </div>
-      <div className="portfolio--section--container">
-        {data?.portfolio?.map((item, index) => (
-          <div key={index} className="portfolio--section--card">
-            <div className="portfolio--section--img">
-              <img src={item.src} alt="Placeholder" />
-            </div>
-            <div className="portfolio--section--card--content">
-              <div>
-                <h3 className="portfolio--section--title">{item.title}</h3>
-                <p className="text-md">{item.description}</p>
-              </div>
-              <p className="text-sm portfolio--link">
-                {item.link}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 20 19"
-                  fill="none"
-                >
-                  <path
-                    d="M4.66667 1.66675H18V15.0001M18 1.66675L2 17.6667L18 1.66675Z"
-                    stroke="currentColor"
-                    stroke-width="2.66667"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </p>
-            </div>
+    <section id="projects" className="section section--alt">
+      <div className="shell">
+        <header className="section__head section__head--split" data-reveal>
+          <div>
+            <span className="section__index">02</span>
+            <h2 className="section__title">Projects</h2>
+            <p className="section__sub">Things I built to learn the hard parts.</p>
           </div>
-        ))}
+          <a
+            className="btn btn--ghost"
+            href={github.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            All repositories
+            <ArrowUpRight size={16} />
+          </a>
+        </header>
+
+        <div className="projects">
+          {data.projects.map((project, index) => (
+            <a
+              key={project.id}
+              className="project"
+              href={project.link}
+              target="_blank"
+              rel="noreferrer"
+              data-reveal
+              style={{ "--delay": `${index * 80}ms` }}
+            >
+              <div className="project__top">
+                <h3 className="project__title">{project.title}</h3>
+                <span className="project__arrow" aria-hidden="true">
+                  <ArrowUpRight size={18} />
+                </span>
+              </div>
+
+              <p className="project__blurb">{project.blurb}</p>
+
+              <ul className="project__highlights">
+                {project.highlights.map((highlight, i) => (
+                  <li key={i}>{highlight}</li>
+                ))}
+              </ul>
+
+              <ul className="tags">
+                {project.tech.map((tech) => (
+                  <li key={tech} className="tag">
+                    {tech}
+                  </li>
+                ))}
+              </ul>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   );

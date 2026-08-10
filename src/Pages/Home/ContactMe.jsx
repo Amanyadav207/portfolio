@@ -1,82 +1,86 @@
+import { useEffect, useRef, useState } from "react";
+import data from "../../data/index.json";
+import { ArrowUpRight, Check, Copy, Download, Mail } from "../../components/Icons";
+
 export default function ContactMe() {
+  const { profile, socials } = data;
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef(null);
+
+  useEffect(() => () => clearTimeout(timerRef.current), []);
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email);
+      setCopied(true);
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard blocked (insecure origin or denied permission) — the
+      // mailto link beside this button is still a working fallback.
+    }
+  };
+
   return (
-    <section id="Contact" className="contact--section">
-      <div>
-        <p className="sub--title">Get In Touch</p>
-        <h2>Contact Me</h2>
-        <p className="text-lg">
-          you can fill your details and send me a message.
-        </p>
+    <section id="contact" className="section contact">
+      <div className="shell">
+        <header className="section__head" data-reveal>
+          <span className="section__index">05</span>
+          <h2 className="section__title">Get in touch</h2>
+          <p className="section__sub">
+            Open to backend, systems, and infra roles — and always happy to talk
+            about pipelines that are too slow.
+          </p>
+        </header>
+
+        <div className="contact__email" data-reveal>
+          <a className="contact__address" href={`mailto:${profile.email}`}>
+            <Mail size={18} />
+            {profile.email}
+          </a>
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm"
+            onClick={copyEmail}
+          >
+            {copied ? <Check size={15} /> : <Copy size={15} />}
+            {copied ? "copied" : "copy"}
+          </button>
+        </div>
+
+        <ul className="contact__links" data-reveal style={{ "--delay": "80ms" }}>
+          {socials.map((social) => (
+            <li key={social.id}>
+              <a
+                className="linkcard"
+                href={social.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span className="linkcard__label">{social.label}</span>
+                <span className="linkcard__handle">{social.handle}</span>
+                <span className="linkcard__arrow" aria-hidden="true">
+                  <ArrowUpRight size={16} />
+                </span>
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              className="linkcard linkcard--accent"
+              href={profile.resume}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span className="linkcard__label">Résumé</span>
+              <span className="linkcard__handle">PDF</span>
+              <span className="linkcard__arrow" aria-hidden="true">
+                <Download size={16} />
+              </span>
+            </a>
+          </li>
+        </ul>
       </div>
-      <form className="contact--form--container">
-        <div className="container">
-          <label htmlFor="first-name" className="contact--label">
-            <span className="text-md">First Name</span>
-            <input
-              type="text"
-              className="contact--input text-md"
-              name="first-name"
-              id="first-name"
-              required
-            />
-          </label>
-          <label htmlFor="last-name" className="contact--label">
-            <span className="text-md">Last Name</span>
-            <input
-              type="text"
-              className="contact--input text-md"
-              name="last-name"
-              id="last-name"
-              required
-            />
-          </label>
-          <label htmlFor="email" className="contact--label">
-            <span className="text-md">Email</span>
-            <input
-              type="email"
-              className="contact--input text-md"
-              name="email"
-              id="email"
-              required
-            />
-          </label>
-          <label htmlFor="phone-number" className="contact--label">
-            <span className="text-md">phone-number</span>
-            <input
-              type="number"
-              className="contact--input text-md"
-              name="phone-number"
-              id="phone-number"
-              required
-            />
-          </label>
-        </div>
-        <label htmlFor="choode-topic" className="contact--label">
-          <span className="text-md">Choose a topic</span>
-          <select id="choose-topic" className="contact--input text-md">
-            <option>Select One...</option>
-            <option>Item 1</option>
-            <option>Item 2</option>
-            <option>Item 3</option>
-          </select>
-        </label>
-        <label htmlFor="message" className="contact--label">
-          <span className="text-md">Message</span>
-          <textarea
-            className="contact--input text-md"
-            id="message"
-            rows="8"
-            placeholder="Type your message..."
-          />
-        </label>
-        <label htmlFor="checkboc" className="checkbox--label">
-          <input type="checkbox" required name="checkbox" id="checkbox" />
-          <span className="text-sm">I accept the terms</span>
-        </label>
-        <div>
-          <button className="btn btn-primary contact--form--btn">Submit</button>
-        </div>
-      </form>
     </section>
   );
 }

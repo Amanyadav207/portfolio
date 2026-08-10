@@ -1,18 +1,46 @@
+import data from "../../data/index.json";
+import { ArrowUpRight } from "../../components/Icons";
+
 export default function AboutMe() {
+  const { profile, education } = data;
+
   return (
-    <section id="AboutMe" className="about--section">
-      <div className="about--section--img">
-        <img src="./img/about-me.png" alt="About Me" />
-      </div>
-      <div className="hero--section--content--box about--section--box">
-        <div className="hero--section--content">
-          <p className="section--title">About</p>
-          <h1 className="skills-section--heading">About Me</h1>
-          <p className="hero--section-description">
-            Hi I'm Aman Yadav, a Full Stack Developer.
-            i am a full stack developer with experience in building web applications using modern technologies like React, Node.js, Express.js, and MongoDB. 
-            I have a passion for building scalable and responsive web applications that provide a great user experience.
-          </p>
+    <section id="about" className="section section--alt">
+      <div className="shell about">
+        <header className="section__head" data-reveal>
+          <span className="section__index">04</span>
+          <h2 className="section__title">About</h2>
+        </header>
+
+        <div className="about__body">
+          <div className="about__prose" data-reveal>
+            {profile.bio.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
+          </div>
+
+          <aside className="about__side" data-reveal style={{ "--delay": "80ms" }}>
+            <h3 className="about__side-title">Education</h3>
+            <ul className="edu">
+              {education.map((school) => (
+                <li key={school.institution} className="edu__item">
+                  <a
+                    className="edu__name"
+                    href={school.link}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {school.institution}
+                    <ArrowUpRight size={13} />
+                  </a>
+                  <p className="edu__degree">{school.degree}</p>
+                  <p className="edu__meta">
+                    {school.period} · {school.location}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </aside>
         </div>
       </div>
     </section>

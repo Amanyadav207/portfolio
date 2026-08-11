@@ -1,0 +1,44 @@
+---
+title: "Bounded worker pools, and the ceilings they hide"
+summary: "Unbounded concurrency and unbounded parallelism both fail, in different ways. Notes on picking a pool size from the constraint that actually binds."
+order: 2
+status: draft
+---
+
+<Todo>
+
+Scaffold only. This one connects two things you have already done — goroutine worker pools over rate-limited market-data vendors, and a distribution ceiling that made added workers useless — so the material is yours; only the writing is missing.
+
+</Todo>
+
+## Why unbounded concurrency fails
+
+<Todo>
+
+Spawning one goroutine per unit of work looks free and is not: it moves contention somewhere less visible — the remote service, a connection pool, the scheduler. Concrete example from Ticker360 ingestion if you have one.
+
+</Todo>
+
+## The pool size is set by the binding constraint, not the work
+
+<Todo>
+
+Central argument. Whatever is scarcest — vendor rate limit, connection count, egress budget — determines the useful pool size; everything past that queues. Name the constraint that actually bound each case you have worked on.
+
+</Todo>
+
+## When adding workers makes things worse
+
+<Todo>
+
+The fan-out case, in general terms: if a shared resource is divided across consumers, per-consumer throughput falls as the pool grows, so wall-clock time can flatten and then regress. Link across to the work page rather than repeating it: <code>/work/hierarchical-fan-out</code>. Keep this at the level of the general principle — the employer-internal specifics stay on that page under the disclosure line you set.
+
+</Todo>
+
+## Measuring the phase, not the job
+
+<Todo>
+
+The practical lesson worth generalising: timing a whole job hides a phase that scales inversely. Say what you would instrument from the start.
+
+</Todo>

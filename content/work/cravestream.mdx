@@ -1,0 +1,82 @@
+---
+title: "CraveStream — short-form video discovery"
+summary: "A vertical video feed with optimized media delivery, cookie-based JWT auth, and role-based access for content partners — deployed split across two providers."
+context: "Personal project"
+stack: ["React", "Node.js", "Express", "MongoDB", "JWT"]
+order: 7
+---
+
+## Problem
+
+A short-form vertical feed is mostly a media-delivery problem wearing a product's clothes. The
+interaction pattern is unforgiving: users scroll continuously and expect the next video to be playing
+immediately, so anything that adds latency between scroll and playback is felt directly.
+
+Layered on that, the platform had two classes of user — viewers and content partners — with genuinely
+different permissions, which makes authorisation a first-class concern rather than a login screen.
+
+## Constraints
+
+- Playback had to start fast enough that scrolling never stalls.
+- Front end and API were deployed to different providers (Vercel and Render), so every authenticated
+  request was cross-origin.
+- Partner-only capabilities had to be enforced server-side.
+
+<Todo>
+
+Add the real targets: time-to-first-frame you aimed for, how many videos were prefetched ahead of the current one, and typical asset sizes.
+
+</Todo>
+
+## Approach
+
+**Media.** Rather than serve uploads directly, media goes through ImageKit, so transformation and
+delivery are handled at the edge instead of by the application. The application stores references; the
+CDN does the work that determines whether the feed feels fast.
+
+**Auth.** Tokens live in `HttpOnly` cookies rather than `localStorage`. The reasoning is specific: a
+token readable by JavaScript is exfiltratable by any successful XSS, whereas an `HttpOnly` cookie is
+not readable by page scripts at all. This narrows XSS impact but shifts the burden to CSRF defence,
+because cookies are attached automatically — a trade, not a free win.
+
+**Split-origin deployment.** Front end and API on different hosts means cookies must be explicitly
+scoped and CORS configured to permit credentialed requests from exactly one origin. This is the part
+that consumed disproportionate time, and it is worth being honest that the difficulty was
+configuration rather than design.
+
+**Authorisation.** Roles are checked server-side per request, so partner capabilities do not depend on
+the client hiding a button.
+
+<DiagramSlot label="Request paths: client → API (credentialed cross-origin, HttpOnly cookie) → MongoDB, alongside the media path client → ImageKit CDN → transformed asset. Marking which hops carry credentials makes the auth story legible." />
+
+<Todo>
+
+Details to fill in:
+
+- What CSRF defence accompanies the cookie-based tokens? Without it the XSS argument above is only half a story.
+- Are refresh tokens used, and how is rotation handled?
+- Which roles exist, and what exactly can a content partner do that a viewer cannot?
+- How is the feed ordered — recency, engagement, random?
+
+</Todo>
+
+## Tradeoffs
+
+Pushing media to a third-party CDN buys performance and costs control and a vendor dependency. Cookie
+auth trades XSS exposure for CSRF surface. Splitting deployment across two providers buys independent
+scaling and free tiers, and costs a permanent cross-origin configuration burden that a single origin
+would not have.
+
+<Todo>
+
+Given the cross-origin cost, would you keep the split deployment? A clear answer either way is more interesting than the list above.
+
+</Todo>
+
+## What I would do differently
+
+<Todo>
+
+Yours. If the split deployment was chosen for free hosting rather than for engineering reasons, that is worth saying plainly — it is a normal constraint and a specific answer.
+
+</Todo>

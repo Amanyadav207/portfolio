@@ -1,0 +1,128 @@
+---
+title: "Hierarchical fan-out for manifest distribution"
+summary: "Distributing a large manifest to thousands of workers without saturating a single source — and why adding workers past ~800 stopped helping."
+context: "Scaler AI Labs"
+period: "2026"
+stack: ["Python", "FastAPI", "concurrency"]
+featured: true
+order: 1
+nda: true
+---
+
+<NdaNote>
+
+This describes employer-internal infrastructure. The technique is described in full; the specifics are not. Softened here: the dataset size is given as multi-terabyte, the storage and scheduling systems are unnamed, and the downstream recipients are described generically. The headline figures (10x, 800 → 8,000 workers) are the ones already on my résumé.
+
+</NdaNote>
+
+## Problem
+
+A scrubbing pass had to run over a multi-terabyte corpus of environment interaction data before
+that data could be handed to downstream consumers. The pass was embarrassingly parallel — each
+worker takes a slice of the corpus, scrubs it, writes the result — so the obvious lever was more
+workers.
+
+That lever stopped working. Past roughly 800 workers, adding more did not reduce wall-clock time,
+and the end-to-end run sat at about 24 hours. A job that has no logical dependency between its units
+of work should not have a concurrency ceiling, so the ceiling was coming from somewhere other than
+the work itself.
+
+<Facts
+  items={[
+    { k: "Before", v: "~24 hours end-to-end, ~800 effective workers" },
+    { k: "After", v: "Under 3 hours — a 10x reduction — at 8,000 workers" },
+    { k: "Shape of work", v: "Embarrassingly parallel; no cross-slice dependencies" },
+  ]}
+/>
+
+<Todo>
+
+Confirm the framing above. Two things I could not verify and did not want to invent: what exactly the ~800 figure measured (workers actually scheduled, or workers doing useful work?), and whether 24 hours was a typical run or a worst case.
+
+</Todo>
+
+## Constraints
+
+- The scrub itself could not change. Output had to stay byte-identical to what downstream consumers
+  already validated against.
+- The corpus was read-only and shared; workers could not coordinate through it.
+- Scale-up had to be reversible — a bad run at 8,000 workers should not be more expensive to
+  recover from than a bad run at 800.
+
+<Todo>
+
+Add the constraints that actually bound you. Candidates worth stating if true: a deadline for same-day handoff, a fixed compute budget, a hard cap on egress from the source, or an availability requirement on the source while the job ran.
+
+</Todo>
+
+## Why more workers stopped helping
+
+Every worker first had to fetch the manifest describing its slice of the corpus. All of them fetched
+it from the same place. That single source has a fixed egress budget, and a fixed budget divided
+across a growing number of consumers gives each consumer a smaller share.
+
+So the job had two phases with opposite scaling behaviour: the scrub scaled linearly with workers,
+and the manifest fetch scaled *inversely*. Past a certain pool size, new workers spent longer
+waiting on the manifest than the pool saved by having them. Wall-clock time flattened, then got
+slightly worse. The bottleneck was distribution, not computation.
+
+<FlatVsTree />
+
+<Todo>
+
+Insert the measured evidence if you have it — the source-side throughput ceiling, or the time workers spent blocked on manifest fetch versus scrubbing. One real number here is worth more than the whole explanation above.
+
+</Todo>
+
+## Approach
+
+Rather than scale the source, remove the idea of a single source. Distribution runs in tiers: a
+small first tier pulls the manifest directly, and once a node has it, that node becomes a source for
+the next tier. Each tier multiplies the available serving capacity, so capacity grows alongside the
+worker pool instead of staying pinned to one host.
+
+<FanOutTree />
+
+The fan-out is what makes the depth manageable: one seed serves ten, those ten serve a hundred,
+those hundred serve a thousand. Reaching 8,000 workers takes four tiers, not 8,000 requests against
+one host.
+
+<Todo>
+
+Fill in the mechanics, which are the most interesting part of this page and the part I could not reconstruct:
+
+- What was the actual fan-out factor, and how did you choose it?
+- How did a node in tier N+1 discover which tier-N node to pull from?
+- What happened when a mid-tier node died holding the only nearby copy?
+- Was tier progression synchronous (wait for a tier to finish) or opportunistic?
+
+</Todo>
+
+## Tradeoffs
+
+Tree distribution buys throughput and pays for it in latency and failure surface. The last tier
+cannot start until its parent has finished receiving, so the *first* worker starts later than it
+would in the flat design — the win is entirely in the tail, and only shows up at scale. A flat
+design would still be the right answer for a small pool.
+
+It also introduces dependency between workers where there was none. In the flat design a failed
+fetch affected one worker. In the tree, a node that dies mid-transfer can strand everything beneath
+it, which turns a trivially retryable operation into one that needs a reparenting or fallback path.
+
+<Todo>
+
+Add the tradeoff you actually felt while operating this. Also worth stating: did the fan-out factor become a tuning knob you had to revisit, and did you keep the flat path as a fallback for small runs?
+
+</Todo>
+
+## What I would do differently
+
+I would measure the distribution phase separately from the start. The reason the ceiling was
+puzzling for as long as it was is that the two phases were timed together, and a job that is 95%
+compute by design does not look like a distribution problem until you split the timer.
+
+<Todo>
+
+Your own version of this. The strongest answers name a specific decision you would reverse, not a general lesson — for example choosing a different fan-out factor, building reparenting in from the start, or instrumenting per-phase timing before scaling at all.
+
+</Todo>

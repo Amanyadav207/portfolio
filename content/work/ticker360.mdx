@@ -1,0 +1,96 @@
+---
+title: "Ticker360 — AI stock research platform"
+summary: "Founding engineer on a greenfield platform: Go APIs over NASDAQ/NYSE equities, scheduled ingestion pipelines, and a Python service answering equity questions in plain English. Landing page to 500+ users."
+context: "Ticker360"
+period: "Nov 2024 — Feb 2025"
+stack: ["Go", "Gin", "Next.js", "Python", "MongoDB", "Docker"]
+order: 6
+---
+
+## Problem
+
+Retail equity research means assembling scattered data — prices, fundamentals, news — into something a
+person can reason about, then letting them ask questions of it. As the sole engineer alongside the
+cofounder, I owned all of it: front end, backend, data pipelines, and deployment, from a landing page
+to 500+ users.
+
+The technical core is that market data has awkward properties. It comes from vendors with their own
+rate limits and outages, it is only partly overlapping between vendors, and users expect it to feel
+current while also expecting pages to load immediately. Those two expectations pull in opposite
+directions.
+
+## Constraints
+
+- Vendor calls were rate-limited and occasionally unavailable, so they could not sit in the request
+  path for a page load.
+- Coverage mattered: no single vendor was complete, which is why there were two.
+- One engineer. Anything requiring ongoing operational attention was effectively unaffordable.
+
+<Todo>
+
+Add the real bounds you worked inside: vendor request quotas, how fresh data actually had to be (real-time, delayed, end-of-day), and the page-load target you held yourself to.
+
+</Todo>
+
+## Approach
+
+The shape that resolved the freshness-versus-latency tension was to move all vendor traffic off the
+request path. Cron-scheduled pipelines ingest prices, fundamentals, and news into MongoDB, with
+indexes chosen for the queries the product actually issues rather than for the shape the vendors
+return. Requests then read from our own store, at our own latency.
+
+Inside ingestion, the work is IO-bound fan-out across many symbols and two vendors, which is what Go
+is good at: bounded goroutine worker pools fetch concurrently, with the pool size — not the symbol
+count — setting the pressure on each vendor.
+
+The front end leans on the same insight. Most pages describe data that changes on a schedule, so they
+are pre-rendered via ISR/SSG rather than assembled per request, with access/refresh token auth for
+the parts that are user-specific.
+
+The AI side is a separate Python service: token-streamed chat so answers appear as they are generated,
+and a tool-calling agent with database access so questions in plain English are answered from the same
+store the rest of the product reads. Where an answer is better shown than described, the agent emits a
+structured chart specification the front end renders inline — the model chooses what to plot, but not
+how to draw it.
+
+<TickerArch />
+
+<Todo>
+
+Worth filling in:
+
+- How were the two vendors reconciled when they disagreed on the same field?
+- What was the ingestion cadence per data type, and did prices differ from fundamentals?
+- How was pool size chosen — measured against vendor limits, or tuned by hand?
+- Which tools did the agent actually have, and what stopped it issuing an expensive query?
+- What did the chart specification look like?
+
+</Todo>
+
+## Tradeoffs
+
+**Scheduled ingestion trades freshness for reliability and speed.** Reads are fast and vendor outages
+stop being user-visible, at the cost of data being as old as the last successful run. That is the right
+trade for fundamentals and news, and progressively less right the closer you get to live prices.
+
+**Pre-rendering trades immediacy for load time**, and inherits the same staleness question one layer up.
+
+**Letting a model choose chart specifications rather than draw charts** keeps rendering deterministic
+and reviewable, but constrains what can be visualised to whatever the spec supports.
+
+**Two vendors bought coverage and cost reconciliation.** Any field present in both needs a rule for
+which one wins.
+
+<Todo>
+
+Which of these was genuinely contentious? If freshness expectations on prices caused real friction, that is the honest tension in this design.
+
+</Todo>
+
+## What I would do differently
+
+<Todo>
+
+Yours to write. As sole engineer the interesting version of this answer is usually about sequencing — what you built early that could have waited, or what you deferred that cost you later.
+
+</Todo>

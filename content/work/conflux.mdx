@@ -38,12 +38,6 @@ and for the result to be correct by construction.
 - The editing surface had to be genuinely good — syntax highlighting, multiple cursors, keybindings —
   which meant embedding a real editor rather than a textarea.
 
-<Todo>
-
-Add the constraints you actually set for yourself: a target number of concurrent editors per room, whether documents needed to survive a server restart, and whether you cared about cross-region latency.
-
-</Todo>
-
 ## Approach: CRDT rather than OT
 
 Two established answers exist. Operational transformation reconciles by transforming each incoming
@@ -60,17 +54,6 @@ Conflux uses Yjs for that layer, with `y-monaco` binding the shared text type to
 the editor is driven by the replica rather than the other way round.
 
 <ConfluxArch />
-
-<Todo>
-
-Details only you can supply:
-
-- How are rooms created and addressed, and is there any access control on joining one?
-- Is document state persisted anywhere, or does a room exist only while someone is connected?
-- Did you implement awareness (remote cursors and selections)? That is usually where the perceived quality of a collaborative editor comes from.
-- Which sandbox or execution provider runs submitted code, and what limits does it enforce?
-
-</Todo>
 
 ## Tradeoffs
 
@@ -89,20 +72,8 @@ function concurrently will get a consistent document that may still be nonsense.
 **Editor weight.** Monaco is a large dependency for a browser tab, which is the price of the editing
 experience being credible.
 
-<Todo>
-
-Which of these actually bit you? A tradeoff you hit in practice is worth more than four you reasoned about — for example whether tombstone growth ever became visible in a long session.
-
-</Todo>
-
 ## What I would do differently
 
 I would separate transport from document logic from the start. It is tempting to let the WebSocket
 layer know about document structure, and that coupling is what makes adding a second transport — a
 local provider for demos exactly like the one at the top of this page — harder than it should be.
-
-<Todo>
-
-Your version. If you would still pick Yjs, say why; if you would reach for a different CRDT implementation or hand-roll the structure to understand it better, that is a more interesting answer.
-
-</Todo>

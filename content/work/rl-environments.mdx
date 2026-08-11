@@ -8,12 +8,6 @@ order: 4
 nda: true
 ---
 
-<NdaNote>
-
-Employer-internal work built for external customers. The applications targeted are described by category rather than by name, and the recipients are not named. If any of this is cleared for public description, the specifics are worth restoring — they are what makes the scope legible.
-
-</NdaNote>
-
 ## Problem
 
 An agent that operates a computer the way a person does — reading the screen, clicking, typing —
@@ -34,41 +28,3 @@ can both rely on.
   benchmark.
 - The applications were third-party and not built for this, so every environment had to work through
   the interface the application actually presents.
-
-<Todo>
-
-Add the real constraints: were environments required to run headless, inside containers, with a fixed wall-clock budget per episode? Was there a required schema each environment had to conform to?
-
-</Todo>
-
-## Approach
-
-<Todo>
-
-This is the section that carries the page, and it is the one I cannot write for you without inventing. Worth covering:
-
-- What did the environment interface look like — reset, step, observation, termination?
-- How was starting state established and restored between episodes: fixtures, snapshots, seeded accounts?
-- How was task success determined — asserting on application state, or on the agent&rsquo;s trace?
-- What did FastAPI serve here: the environment itself, an orchestration layer, or both?
-- How much was shared scaffolding versus per-application work? A rough split makes the scale of &ldquo;ten-plus&rdquo; concrete.
-
-</Todo>
-
-<DiagramSlot label="Environment interface: agent → action → application under test → observation (screen + structured state) → reward/termination signal, with the reset path that restores a known starting state. Draw this once the interface is pinned down." />
-
-## Tradeoffs
-
-<Todo>
-
-The interesting tension in this kind of work is fidelity versus stability: driving the real application is faithful but breaks when the vendor ships a UI change, while stubbing it is stable but teaches the agent something slightly false. Where did you land, and what broke?
-
-</Todo>
-
-## What I would do differently
-
-<Todo>
-
-One concrete decision you would reverse. If the per-application work turned out to dominate the shared scaffolding, that is a strong and specific answer.
-
-</Todo>

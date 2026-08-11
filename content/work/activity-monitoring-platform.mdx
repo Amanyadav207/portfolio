@@ -8,12 +8,6 @@ order: 5
 nda: true
 ---
 
-<NdaNote>
-
-Employer-internal product, built by a four-engineer team; I owned the capture/analysis backend and the dashboard. Described at the level of the data-engineering problem. What is captured, who is monitored, and how that data is governed are deliberately out of scope here — if this page goes public, that boundary is the one to re-read.
-
-</NdaNote>
-
 ## Problem
 
 A desktop application captured what a user was doing inside other applications — periodic screenshots
@@ -32,12 +26,6 @@ without bound, and dashboards that were fast at launch stop being fast.
   data grows.
 - Event volume only ever increased.
 
-<Todo>
-
-Add the real numbers if you can state them: capture interval, events per user per day, dashboard latency target. This page is about scale, and it currently has no scale in it.
-
-</Todo>
-
 ## Approach
 
 The analytics split followed the shape of the queries. Postgres stayed the system of record for
@@ -49,19 +37,6 @@ The reason this works is that dashboard queries touch few columns and enormous n
 is close to the worst case for a row store and close to the best case for a column store. Keeping
 both meant neither had to be bent into a shape it is bad at.
 
-<DiagramSlot label="Data path: capture agent → ingestion → Postgres (system of record, transactional reads) with aggregate/event data flowing into ClickHouse → analytics API → dashboard. Mark where the Postgres→ClickHouse boundary sits and how data crosses it." />
-
-<Todo>
-
-The mechanics I could not verify:
-
-- How did data get into ClickHouse — dual write, CDC, batch ETL, materialised views?
-- What consistency guarantee did dashboards actually need, and how stale could ClickHouse be?
-- Which queries stayed on Postgres, and what was the rule for deciding?
-- What did the analytics API expose — fixed endpoints per dashboard, or something more general?
-
-</Todo>
-
 ## Tradeoffs
 
 Running two stores means the same data exists twice, in two shapes, and something has to keep them
@@ -71,17 +46,3 @@ staleness window that the dashboard's semantics have to be honest about.
 The alternative — pushing Postgres harder with rollup tables and aggressive indexing — is less
 infrastructure and less to reason about, and it works well until scan volume outgrows it. The
 question is not which is better but where the crossover sits.
-
-<Todo>
-
-Where was the crossover for you? If you tried rollups in Postgres before reaching for ClickHouse, that progression is the most credible part of this story.
-
-</Todo>
-
-## What I would do differently
-
-<Todo>
-
-One concrete decision. If the dual-store split happened later than it should have, or earlier than it needed to, say which.
-
-</Todo>

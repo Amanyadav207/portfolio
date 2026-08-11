@@ -2,7 +2,6 @@ import Link from "next/link";
 import { getAllDocs } from "@/lib/content";
 import { metrics, site } from "@/lib/site";
 import { repoGroups } from "@/lib/repos";
-import { Todo } from "@/components/callouts";
 
 function SectionHead({
   index,
@@ -36,7 +35,6 @@ export default function HomePage() {
   const work = getAllDocs("work");
   const featured = work.filter((d) => d.featured);
   const rest = work.filter((d) => !d.featured);
-  const writing = getAllDocs("writing");
 
   return (
     <div className="mx-auto max-w-shell px-6">
@@ -239,82 +237,13 @@ export default function HomePage() {
           ))}
         </div>
 
-        <Todo>
-          Most of these repos have no description on GitHub, so none is written here — I would only
-          be guessing. Add a one-line `note` per repo in `lib/repos.ts`, and drop any that no longer
-          represent you. The full list of 77 is one click away regardless.
-        </Todo>
       </section>
 
-      {/* ============ writing ============ */}
-      <section id="writing" className="pt-16 md:pt-20">
-        <SectionHead index="03" title="Writing" />
-        <ul className="grid gap-4 md:grid-cols-2">
-          {writing.map((doc) => (
-            <li key={doc.slug}>
-              <Link
-                href={`/writing/${doc.slug}`}
-                className="card-interactive group flex h-full flex-col p-6"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  {doc.status === "draft" && (
-                    <span className="rounded border border-line-2 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-dim">
-                      draft
-                    </span>
-                  )}
-                  <span
-                    aria-hidden
-                    className="ml-auto font-mono text-[13px] text-dim transition-colors duration-200 ease-ui group-hover:text-accent"
-                  >
-                    →
-                  </span>
-                </div>
-                <h3 className="mt-3 text-[17px] font-semibold text-fg transition-colors duration-200 ease-ui group-hover:text-accent">
-                  {doc.title}
-                </h3>
-                <p className="mt-3 text-[14.5px] leading-relaxed text-muted">{doc.summary}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
 
-      {/* ============ now ============ */}
-      <section id="now" className="pt-16 md:pt-20">
-        <SectionHead index="04" title="Now" />
-        <p className="mb-6 max-w-prose text-[15px] leading-relaxed text-muted">
-          What I am working on and learning at the moment.{" "}
-          <span className="font-mono text-[12px] text-dim">
-            (Last updated: TODO(aman) — set on first edit.)
-          </span>
-        </p>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <Todo>
-            <strong className="text-fg">Working on</strong> — two or three lines on your current
-            focus at Scaler AI Labs, at the level you are comfortable stating publicly. Employer
-            named, technique generic, no customer names.
-          </Todo>
-          <Todo>
-            <strong className="text-fg">Learning</strong> — what you are deliberately going deeper
-            on, and why. Concrete beats aspirational: &ldquo;reading Yjs internals to understand how
-            state vectors bound sync payload size&rdquo; over &ldquo;learning distributed
-            systems&rdquo;.
-          </Todo>
-          <Todo>
-            <strong className="text-fg">Reading</strong> — papers, books, or codebases currently
-            open. Two or three, a line each on why.
-          </Todo>
-          <Todo>
-            <strong className="text-fg">Open to</strong> — whether you are looking for roles or
-            internships, what kind, and how to reach you.
-          </Todo>
-        </div>
-      </section>
 
       {/* ============ contact ============ */}
       <section id="contact" className="pt-16 md:pt-20">
-        <SectionHead index="05" title="Get in touch" />
+        <SectionHead index="03" title="Get in touch" />
         <div className="card p-8">
           <p className="max-w-prose text-[16px] leading-relaxed text-muted">
             Open to backend, systems, and infrastructure roles — and always happy to talk about a

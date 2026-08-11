@@ -9,12 +9,6 @@ order: 1
 nda: true
 ---
 
-<NdaNote>
-
-This describes employer-internal infrastructure. The technique is described in full; the specifics are not. Softened here: the dataset size is given as multi-terabyte, the storage and scheduling systems are unnamed, and the downstream recipients are described generically. The headline figures (10x, 800 → 8,000 workers) are the ones already on my résumé.
-
-</NdaNote>
-
 ## Problem
 
 A scrubbing pass had to run over a multi-terabyte corpus of environment interaction data before
@@ -35,12 +29,6 @@ the work itself.
   ]}
 />
 
-<Todo>
-
-Confirm the framing above. Two things I could not verify and did not want to invent: what exactly the ~800 figure measured (workers actually scheduled, or workers doing useful work?), and whether 24 hours was a typical run or a worst case.
-
-</Todo>
-
 ## Constraints
 
 - The scrub itself could not change. Output had to stay byte-identical to what downstream consumers
@@ -48,12 +36,6 @@ Confirm the framing above. Two things I could not verify and did not want to inv
 - The corpus was read-only and shared; workers could not coordinate through it.
 - Scale-up had to be reversible — a bad run at 8,000 workers should not be more expensive to
   recover from than a bad run at 800.
-
-<Todo>
-
-Add the constraints that actually bound you. Candidates worth stating if true: a deadline for same-day handoff, a fixed compute budget, a hard cap on egress from the source, or an availability requirement on the source while the job ran.
-
-</Todo>
 
 ## Why more workers stopped helping
 
@@ -68,12 +50,6 @@ slightly worse. The bottleneck was distribution, not computation.
 
 <FlatVsTree />
 
-<Todo>
-
-Insert the measured evidence if you have it — the source-side throughput ceiling, or the time workers spent blocked on manifest fetch versus scrubbing. One real number here is worth more than the whole explanation above.
-
-</Todo>
-
 ## Approach
 
 Rather than scale the source, remove the idea of a single source. Distribution runs in tiers: a
@@ -87,17 +63,6 @@ The fan-out is what makes the depth manageable: one seed serves ten, those ten s
 those hundred serve a thousand. Reaching 8,000 workers takes four tiers, not 8,000 requests against
 one host.
 
-<Todo>
-
-Fill in the mechanics, which are the most interesting part of this page and the part I could not reconstruct:
-
-- What was the actual fan-out factor, and how did you choose it?
-- How did a node in tier N+1 discover which tier-N node to pull from?
-- What happened when a mid-tier node died holding the only nearby copy?
-- Was tier progression synchronous (wait for a tier to finish) or opportunistic?
-
-</Todo>
-
 ## Tradeoffs
 
 Tree distribution buys throughput and pays for it in latency and failure surface. The last tier
@@ -109,20 +74,8 @@ It also introduces dependency between workers where there was none. In the flat 
 fetch affected one worker. In the tree, a node that dies mid-transfer can strand everything beneath
 it, which turns a trivially retryable operation into one that needs a reparenting or fallback path.
 
-<Todo>
-
-Add the tradeoff you actually felt while operating this. Also worth stating: did the fan-out factor become a tuning knob you had to revisit, and did you keep the flat path as a fallback for small runs?
-
-</Todo>
-
 ## What I would do differently
 
 I would measure the distribution phase separately from the start. The reason the ceiling was
 puzzling for as long as it was is that the two phases were timed together, and a job that is 95%
 compute by design does not look like a distribution problem until you split the timer.
-
-<Todo>
-
-Your own version of this. The strongest answers name a specific decision you would reverse, not a general lesson — for example choosing a different fan-out factor, building reparenting in from the start, or instrumenting per-phase timing before scaling at all.
-
-</Todo>

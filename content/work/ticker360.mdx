@@ -26,12 +26,6 @@ directions.
 - Coverage mattered: no single vendor was complete, which is why there were two.
 - One engineer. Anything requiring ongoing operational attention was effectively unaffordable.
 
-<Todo>
-
-Add the real bounds you worked inside: vendor request quotas, how fresh data actually had to be (real-time, delayed, end-of-day), and the page-load target you held yourself to.
-
-</Todo>
-
 ## Approach
 
 The shape that resolved the freshness-versus-latency tension was to move all vendor traffic off the
@@ -55,18 +49,6 @@ how to draw it.
 
 <TickerArch />
 
-<Todo>
-
-Worth filling in:
-
-- How were the two vendors reconciled when they disagreed on the same field?
-- What was the ingestion cadence per data type, and did prices differ from fundamentals?
-- How was pool size chosen — measured against vendor limits, or tuned by hand?
-- Which tools did the agent actually have, and what stopped it issuing an expensive query?
-- What did the chart specification look like?
-
-</Todo>
-
 ## Tradeoffs
 
 **Scheduled ingestion trades freshness for reliability and speed.** Reads are fast and vendor outages
@@ -80,17 +62,3 @@ and reviewable, but constrains what can be visualised to whatever the spec suppo
 
 **Two vendors bought coverage and cost reconciliation.** Any field present in both needs a rule for
 which one wins.
-
-<Todo>
-
-Which of these was genuinely contentious? If freshness expectations on prices caused real friction, that is the honest tension in this design.
-
-</Todo>
-
-## What I would do differently
-
-<Todo>
-
-Yours to write. As sole engineer the interesting version of this answer is usually about sequencing — what you built early that could have waited, or what you deferred that cost you later.
-
-</Todo>

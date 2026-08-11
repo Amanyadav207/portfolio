@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 
-export type Collection = "work" | "writing";
+export type Collection = "work";
 
 export interface DocMeta {
   slug: string;
@@ -17,7 +17,6 @@ export interface DocMeta {
   featured?: boolean;
   /** Lower numbers sort first. */
   order?: number;
-  status?: "draft" | "published";
   /** Set on pages describing employer-internal systems. */
   nda?: boolean;
 }
@@ -55,7 +54,6 @@ export function getDoc(collection: Collection, slug: string): Doc {
     stack: Array.isArray(data.stack) ? data.stack.map(String) : undefined,
     featured: Boolean(data.featured),
     order: typeof data.order === "number" ? data.order : 999,
-    status: data.status === "draft" ? "draft" : "published",
     nda: Boolean(data.nda),
     body: content,
   };

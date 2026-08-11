@@ -42,6 +42,5 @@ export const metrics = [
 export const nav = [
   { label: "Work", href: "/#work" },
   { label: "Open source", href: "/#open-source" },
-  { label: "Writing", href: "/#writing" },
-  { label: "Now", href: "/#now" },
+  { label: "Contact", href: "/#contact" },
 ] as const;

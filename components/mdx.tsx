@@ -2,7 +2,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import { DiagramSlot, Facts, NdaNote, Todo } from "./callouts";
+import { Facts } from "./callouts";
 import { FanOutTree, FlatVsTree } from "./diagrams/fan-out";
 import { AxParity } from "./diagrams/ax-parity";
 import { ConfluxArch } from "./diagrams/conflux-arch";
@@ -10,9 +10,6 @@ import { TickerArch } from "./diagrams/ticker-arch";
 import { ConfluxDemo } from "./conflux-demo-loader";
 
 const components = {
-  Todo,
-  NdaNote,
-  DiagramSlot,
   Facts,
   FanOutTree,
   FlatVsTree,

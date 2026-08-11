@@ -27,7 +27,7 @@ function Tree({
           y1={nodes[a].y + 13}
           x2={ox + nodes[b].x}
           y2={nodes[b].y - 5}
-          stroke={nodes[b].missing ? "var(--line)" : "var(--line-strong)"}
+          stroke={nodes[b].missing ? "var(--line)" : "var(--line-2)"}
           strokeWidth={1}
           strokeDasharray={nodes[b].missing ? "3 3" : undefined}
         />
@@ -42,7 +42,7 @@ function Tree({
             height={18}
             rx={3}
             fill="var(--bg)"
-            stroke={n.missing ? "var(--line)" : "var(--line-strong)"}
+            stroke={n.missing ? "var(--line)" : "var(--line-2)"}
             strokeWidth={1}
             strokeDasharray={n.missing ? "3 3" : undefined}
           />

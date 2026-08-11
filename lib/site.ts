@@ -35,8 +35,13 @@ export const metrics = [
   { value: "500+", label: "users shipped to", detail: "as founding engineer" },
 ] as const;
 
+/**
+ * Section anchors on the single page. Absolute so they also work from the
+ * project write-up pages.
+ */
 export const nav = [
-  { label: "Work", href: "/work" },
-  { label: "Writing", href: "/writing" },
-  { label: "Now", href: "/now" },
+  { label: "Work", href: "/#work" },
+  { label: "Open source", href: "/#open-source" },
+  { label: "Writing", href: "/#writing" },
+  { label: "Now", href: "/#now" },
 ] as const;

@@ -53,7 +53,7 @@ export function FanOutTree() {
                 y1={tier.y + 9}
                 x2={cx}
                 y2={next.y - 9}
-                stroke={next.faded ? "var(--line)" : "var(--line-strong)"}
+                stroke={next.faded ? "var(--line)" : "var(--line-2)"}
                 strokeWidth={1}
                 strokeDasharray={next.faded ? "3 3" : undefined}
               />
@@ -89,7 +89,7 @@ export function FanOutTree() {
                   width={68}
                   height={22}
                   rx={3}
-                  fill="var(--raised)"
+                  fill="var(--surface)"
                   stroke="var(--accent)"
                   strokeWidth={1.25}
                 />
@@ -99,8 +99,8 @@ export function FanOutTree() {
                   cx={x}
                   cy={tier.y}
                   r={7}
-                  fill="var(--raised)"
-                  stroke="var(--line-strong)"
+                  fill="var(--surface)"
+                  stroke="var(--line-2)"
                   strokeWidth={1.25}
                 />
               )
@@ -148,7 +148,7 @@ export function FlatVsTree() {
         width={68}
         height={22}
         rx={3}
-        fill="var(--raised)"
+        fill="var(--surface)"
         stroke="var(--accent)"
         strokeWidth={1.25}
       />
@@ -170,8 +170,8 @@ export function FlatVsTree() {
             cx={x - 260 + 190}
             cy={140}
             r={6}
-            fill="var(--raised)"
-            stroke="var(--line-strong)"
+            fill="var(--surface)"
+            stroke="var(--line-2)"
             strokeWidth={1.25}
           />
         </g>
@@ -180,7 +180,7 @@ export function FlatVsTree() {
       <text x={16} y={182} className="fill-[var(--dim)] font-mono text-[11px]">
         egress ÷ N
       </text>
-      <line x1={90} y1={178} x2={330} y2={178} stroke="var(--line-strong)" strokeWidth={1} />
+      <line x1={90} y1={178} x2={330} y2={178} stroke="var(--line-2)" strokeWidth={1} />
       <text x={186} y={200} className="fill-[var(--dim)] font-mono text-[11px]">
         per-worker share shrinks as N grows
       </text>
@@ -199,7 +199,7 @@ export function FlatVsTree() {
         width={68}
         height={22}
         rx={3}
-        fill="var(--raised)"
+        fill="var(--surface)"
         stroke="var(--accent)"
         strokeWidth={1.25}
       />
@@ -209,12 +209,12 @@ export function FlatVsTree() {
 
       {[500, 590, 680].map((x, i) => (
         <g key={i}>
-          <line x1={590} y1={62} x2={x} y2={92} stroke="var(--line-strong)" strokeWidth={1} />
-          <circle cx={x} cy={100} r={7} fill="var(--raised)" stroke="var(--line-strong)" strokeWidth={1.25} />
+          <line x1={590} y1={62} x2={x} y2={92} stroke="var(--line-2)" strokeWidth={1} />
+          <circle cx={x} cy={100} r={7} fill="var(--surface)" stroke="var(--line-2)" strokeWidth={1.25} />
           {[x - 26, x, x + 26].map((cx, ci) => (
             <g key={ci}>
               <line x1={x} y1={107} x2={cx} y2={132} stroke="var(--line)" strokeWidth={1} />
-              <circle cx={cx} cy={140} r={6} fill="var(--raised)" stroke="var(--line)" strokeWidth={1.25} />
+              <circle cx={cx} cy={140} r={6} fill="var(--surface)" stroke="var(--line)" strokeWidth={1.25} />
             </g>
           ))}
         </g>
@@ -223,7 +223,7 @@ export function FlatVsTree() {
       <text x={432} y={182} className="fill-[var(--dim)] font-mono text-[11px]">
         capacity ∝ tiers
       </text>
-      <line x1={556} y1={178} x2={764} y2={178} stroke="var(--line-strong)" strokeWidth={1} />
+      <line x1={556} y1={178} x2={764} y2={178} stroke="var(--line-2)" strokeWidth={1} />
       <text x={432} y={200} className="fill-[var(--dim)] font-mono text-[11px]">
         each receiver becomes a sender
       </text>

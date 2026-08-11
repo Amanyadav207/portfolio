@@ -19,7 +19,7 @@ export function Figure({ children, caption, label, width, height }: FigureProps)
     // Diagrams are allowed to run wider than the prose column — squeezing a
     // tree into 68ch makes the labels unreadable.
     <figure className="my-8 max-w-[54rem]">
-      <div className="overflow-x-auto rounded-md border border-line bg-raised">
+      <div className="overflow-x-auto rounded-md border border-line bg-surface">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           width={width}

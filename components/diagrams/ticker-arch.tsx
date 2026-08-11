@@ -24,7 +24,7 @@ function Node({
         height={sub ? 44 : 28}
         rx={4}
         fill="var(--bg)"
-        stroke={accent ? "var(--accent)" : "var(--line-strong)"}
+        stroke={accent ? "var(--accent)" : "var(--line-2)"}
         strokeWidth={1.25}
       />
       <text
@@ -54,7 +54,7 @@ export function TickerArch() {
     >
       <defs>
         <marker id="t-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6 Z" fill="var(--line-strong)" />
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--line-2)" />
         </marker>
       </defs>
 
@@ -69,12 +69,12 @@ export function TickerArch() {
       <Node x={266} y={244} w={168} title="cron ingestion" />
 
       {/* front end → services */}
-      <line x1={166} y1={122} x2={266} y2={78} stroke="var(--line-strong)" strokeWidth={1} markerEnd="url(#t-arrow)" />
-      <line x1={166} y1={140} x2={266} y2={186} stroke="var(--line-strong)" strokeWidth={1} markerEnd="url(#t-arrow)" />
+      <line x1={166} y1={122} x2={266} y2={78} stroke="var(--line-2)" strokeWidth={1} markerEnd="url(#t-arrow)" />
+      <line x1={166} y1={140} x2={266} y2={186} stroke="var(--line-2)" strokeWidth={1} markerEnd="url(#t-arrow)" />
 
       {/* services → db */}
-      <line x1={434} y1={78} x2={534} y2={124} stroke="var(--line-strong)" strokeWidth={1} markerEnd="url(#t-arrow)" />
-      <line x1={434} y1={186} x2={534} y2={142} stroke="var(--line-strong)" strokeWidth={1} markerEnd="url(#t-arrow)" />
+      <line x1={434} y1={78} x2={534} y2={124} stroke="var(--line-2)" strokeWidth={1} markerEnd="url(#t-arrow)" />
+      <line x1={434} y1={186} x2={534} y2={142} stroke="var(--line-2)" strokeWidth={1} markerEnd="url(#t-arrow)" />
 
       {/* ingestion path */}
       <line x1={434} y1={252} x2={609} y2={252} stroke="var(--line)" strokeWidth={1} strokeDasharray="3 3" />

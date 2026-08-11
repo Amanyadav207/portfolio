@@ -11,7 +11,7 @@ export const ConfluxDemo = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="my-8 rounded-md border border-line bg-raised px-3 py-6">
+      <div className="my-8 rounded-md border border-line bg-surface px-3 py-6">
         <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-dim">live crdt demo</p>
         <p className="mt-2 font-mono text-[12px] text-muted">loading editors…</p>
       </div>

@@ -31,7 +31,7 @@ export default function WorkPage({ params }: Params) {
     <article className="mx-auto max-w-shell px-6">
       <header className="py-12 md:py-16">
         <Link
-          href="/work"
+          href="/#work"
           className="font-mono text-[12px] text-dim transition-colors duration-200 ease-ui hover:text-accent"
         >
           ← work

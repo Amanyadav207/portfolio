@@ -10,7 +10,7 @@ export function Todo({ children }: { children: ReactNode }) {
       <p className="border-b border-dashed border-line-2 bg-accent-dim px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-accent">
         TODO(aman)
       </p>
-      <div className="px-4 py-3.5 text-[14px] leading-relaxed text-muted [&_li]:relative [&_li]:pl-4 [&_li]:before:absolute [&_li]:before:left-0 [&_li]:before:top-[0.72em] [&_li]:before:h-px [&_li]:before:w-2 [&_li]:before:bg-accent-line [&_ul]:mt-2 [&_ul]:space-y-1.5 [&>*+*]:mt-2.5">
+      <div className="max-w-prose px-4 py-3.5 text-[14px] leading-relaxed text-muted [&_li]:relative [&_li]:pl-4 [&_li]:before:absolute [&_li]:before:left-0 [&_li]:before:top-[0.72em] [&_li]:before:h-px [&_li]:before:w-2 [&_li]:before:bg-accent-line [&_ul]:mt-2 [&_ul]:space-y-1.5 [&>*+*]:mt-2.5">
         {children}
       </div>
     </div>

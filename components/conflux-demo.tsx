@@ -21,6 +21,24 @@ if (typeof window !== "undefined" && !(window as unknown as Record<string, unkno
   };
 }
 
+// Monaco's stock vs-dark is blue-black and fights the warm palette.
+const THEME = "warm-dark";
+monaco.editor.defineTheme(THEME, {
+  base: "vs-dark",
+  inherit: true,
+  rules: [],
+  colors: {
+    "editor.background": "#1b1815",
+    "editor.foreground": "#ede6da",
+    "editorGutter.background": "#1b1815",
+    "editorLineNumber.foreground": "#7c7263",
+    "editorLineNumber.activeForeground": "#f5a524",
+    "editorCursor.foreground": "#f5a524",
+    "editor.selectionBackground": "#3c362d",
+    "editorIndentGuide.background1": "#2b2620",
+  },
+});
+
 /** Marks a transaction as arriving from the other peer, so we never echo it back. */
 const REMOTE = "remote";
 
@@ -158,7 +176,7 @@ export function ConfluxDemo() {
   const totalPending = pending.a + pending.b;
 
   return (
-    <section className="my-8 overflow-hidden rounded-md border border-line bg-raised">
+    <section className="my-8 overflow-hidden rounded-md border border-line bg-surface">
       {/* control bar */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line px-3 py-2">
         <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-dim">
@@ -180,14 +198,14 @@ export function ConfluxDemo() {
           <button
             type="button"
             onClick={toggleConnection}
-            className="rounded border border-line-strong px-2 py-1 font-mono text-[11px] text-muted hover:border-accent hover:text-accent"
+            className="rounded border border-line-2 px-2 py-1 font-mono text-[11px] text-muted hover:border-accent hover:text-accent"
           >
             {isOnline ? "go offline" : "reconnect"}
           </button>
           <button
             type="button"
             onClick={reset}
-            className="rounded border border-line px-2 py-1 font-mono text-[11px] text-dim hover:border-line-strong hover:text-muted"
+            className="rounded border border-line px-2 py-1 font-mono text-[11px] text-dim hover:border-line-2 hover:text-muted"
           >
             reset
           </button>
@@ -209,7 +227,7 @@ export function ConfluxDemo() {
             <Editor
               height="252px"
               defaultLanguage="go"
-              theme="vs-dark"
+              theme={THEME}
               onMount={attach(peer)}
               options={EDITOR_OPTIONS}
               loading={

@@ -3,20 +3,21 @@
 @tailwind utilities;
 
 /* ------------------------------------------------------------------
-   Tokens — dark, one accent, layered surfaces for depth.
+   Tokens — warm dark, single amber accent, layered surfaces for depth.
+   Every neutral carries a little warmth so nothing reads as blue-black.
    ------------------------------------------------------------------ */
 :root {
-  --bg: #08090b;
-  --surface: #0e1014;
-  --surface-2: #14171d;
-  --line: #1c2027;
-  --line-2: #2a2f38;
-  --fg: #eceef1;
-  --muted: #9ba2ac;
-  --dim: #6b727d;
-  --accent: #7cc4fa;
-  --accent-dim: rgba(124, 196, 250, 0.1);
-  --accent-line: rgba(124, 196, 250, 0.34);
+  --bg: #12100e;
+  --surface: #1b1815;
+  --surface-2: #232019;
+  --line: #2b2620;
+  --line-2: #3c362d;
+  --fg: #ede6da;
+  --muted: #a89e8f;
+  --dim: #7c7263;
+  --accent: #f5a524;
+  --accent-dim: rgba(245, 165, 36, 0.12);
+  --accent-line: rgba(245, 165, 36, 0.36);
 }
 
 @layer base {
@@ -53,7 +54,12 @@
 
   ::selection {
     background: var(--accent);
-    color: #04121d;
+    color: #1a1206;
+  }
+
+  /* Anchored sections clear the sticky header. */
+  section[id] {
+    scroll-margin-top: 5rem;
   }
 
   :focus-visible {
@@ -155,10 +161,12 @@
     @apply mt-9 mb-2 text-[16.5px] font-semibold text-fg;
   }
 
-  .prose p,
-  .prose ul,
-  .prose ol,
-  .prose blockquote {
+  /* Direct children only — callouts and figures set their own widths, and a
+     blanket rule here would clip their internal layout to the text measure. */
+  .prose > p,
+  .prose > ul,
+  .prose > ol,
+  .prose > blockquote {
     @apply max-w-prose;
   }
 

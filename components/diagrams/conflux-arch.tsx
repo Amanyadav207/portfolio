@@ -26,7 +26,7 @@ function Box({
         height={h}
         rx={4}
         fill="var(--bg)"
-        stroke={accent ? "var(--accent)" : "var(--line-strong)"}
+        stroke={accent ? "var(--accent)" : "var(--line-2)"}
         strokeWidth={1.25}
       />
       <text
@@ -66,7 +66,7 @@ function Arrow({
   dashed?: boolean;
 }) {
   return (
-    <g stroke="var(--line-strong)" strokeWidth={1}>
+    <g stroke="var(--line-2)" strokeWidth={1}>
       <line
         x1={x1}
         y1={y1}
@@ -91,7 +91,7 @@ export function ConfluxArch() {
     >
       <defs>
         <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6 Z" fill="var(--line-strong)" />
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--line-2)" />
         </marker>
         <marker
           id="arrowhead-start"
@@ -101,7 +101,7 @@ export function ConfluxArch() {
           refY="3"
           orient="auto-start-reverse"
         >
-          <path d="M0,0 L6,3 L0,6 Z" fill="var(--line-strong)" />
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--line-2)" />
         </marker>
       </defs>
 

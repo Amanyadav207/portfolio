@@ -22,6 +22,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+      <head>
+        {/* Runs before paint. Gates the scroll-reveal styles so the page is
+            never left invisible when JavaScript is unavailable. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.setAttribute('data-js','1')`,
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

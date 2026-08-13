@@ -1,13 +1,10 @@
 /**
- * Curated selection from github.com/Amanyadav207 (77 public repos).
+ * Curated from github.com/Amanyadav207 (77 public repos), filtered for
+ * backend / systems / design signal.
  *
- * Filtered for backend / systems / design signal — coursework-scale repos
- * (counter apps, colour pickers, tutorial follow-alongs) are deliberately left
- * off, since the site leads with depth rather than breadth. Add or remove
- * freely; this list is the only place it is defined.
- *
- * `note` is intentionally empty where GitHub carries no description. Write one
- * line each rather than letting me guess what these do.
+ * Every `note` below is taken from the repository's own README — nothing here
+ * is written from guesswork. Repos whose READMEs said nothing useful are left
+ * out rather than padded with invented copy.
  */
 export interface Repo {
   name: string;
@@ -16,59 +13,67 @@ export interface Repo {
   note?: string;
 }
 
+const gh = (name: string) => `https://github.com/Amanyadav207/${name}`;
+
 export const repoGroups: { group: string; repos: Repo[] }[] = [
   {
     group: "Backend & systems",
     repos: [
       {
         name: "redis-assignment",
-        url: "https://github.com/Amanyadav207/redis-assignment",
+        url: gh("redis-assignment"),
         language: "Go",
+        note: "In-memory key-value cache service written in Go, built for high throughput and containerised with Docker.",
       },
       {
-        name: "Go_Backend_Server",
-        url: "https://github.com/Amanyadav207/Go_Backend_Server",
-        language: "Go",
-      },
-      {
-        name: "Next-JS-Golang-POC",
-        url: "https://github.com/Amanyadav207/Next-JS-Golang-POC",
-        language: "Go · Next.js",
+        name: "sheetguard",
+        url: gh("sheetguard"),
+        language: "Python",
+        note: "ETL pipeline ingesting Google Sheets data into PostgreSQL, with validation, error handling and metrics tracking.",
       },
       {
         name: "secure-task-manager",
-        url: "https://github.com/Amanyadav207/secure-task-manager",
-        language: "Java",
+        url: gh("secure-task-manager"),
+        language: "Java · Spring Boot",
+        note: "Spring Boot 3 REST API for task management.",
       },
       {
         name: "Real-time-tracker",
-        url: "https://github.com/Amanyadav207/Real-time-tracker",
-        language: "JavaScript",
+        url: gh("Real-time-tracker"),
+        language: "Node.js · Socket.io",
+        note: "Real-time location tracking with bidirectional Socket.io communication, plotted live on a Leaflet map.",
+      },
+      {
+        name: "Next-JS-Golang-POC",
+        url: gh("Next-JS-Golang-POC"),
+        language: "Go · Next.js",
+        note: "Dockerised full-stack application pairing a Go backend with a Next.js front end.",
       },
     ],
   },
   {
-    group: "System design",
+    group: "Distributed systems & design",
     repos: [
-      { name: "HLD", url: "https://github.com/Amanyadav207/HLD", language: "Python" },
       {
         name: "FB_Messenger",
-        url: "https://github.com/Amanyadav207/FB_Messenger",
-        language: "Python",
+        url: gh("FB_Messenger"),
+        language: "Python · Cassandra",
+        note: "Messenger-style backend built on Apache Cassandra as the distributed store.",
       },
       {
         name: "imdb-content-system",
-        url: "https://github.com/Amanyadav207/imdb-content-system",
-        language: "JavaScript",
+        url: gh("imdb-content-system"),
+        language: "Flask · MongoDB · React",
+        note: "Full-stack system for bulk-uploading and managing movie data from CSV.",
       },
       {
         name: "ParkingLot-LLD",
-        url: "https://github.com/Amanyadav207/ParkingLot-LLD",
+        url: gh("ParkingLot-LLD"),
         language: "Low-level design",
       },
       {
         name: "ATM-LLD",
-        url: "https://github.com/Amanyadav207/ATM-LLD",
+        url: gh("ATM-LLD"),
         language: "Low-level design",
       },
     ],
@@ -77,24 +82,16 @@ export const repoGroups: { group: string; repos: Repo[] }[] = [
     group: "Data & tooling",
     repos: [
       {
-        name: "sheetguard",
-        url: "https://github.com/Amanyadav207/sheetguard",
+        name: "Web_Scraper",
+        url: gh("Web_Scraper"),
         language: "Python",
+        note: "Scrapes product name and price from Amazon and Flipkart product URLs.",
       },
       {
         name: "Stock_Screener",
-        url: "https://github.com/Amanyadav207/Stock_Screener",
+        url: gh("Stock_Screener"),
         language: "JavaScript",
-      },
-      {
-        name: "Web_Scraper",
-        url: "https://github.com/Amanyadav207/Web_Scraper",
-        language: "Python",
-      },
-      {
-        name: "portswigger-web-security-academy",
-        url: "https://github.com/Amanyadav207/portswigger-web-security-academy",
-        language: "Web security",
+        note: "Screens a static dataset of 500 stocks across configurable parameters.",
       },
     ],
   },

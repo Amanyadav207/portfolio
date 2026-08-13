@@ -14,6 +14,20 @@ npm run build      # static export → out/
 npm run typecheck  # tsc --noEmit
 ```
 
+## Deploying
+
+`next.config.mjs` sets `output: "export"`, so the build emits plain files to
+`out/` — no Node runtime required. `vercel.json` pins the framework and output
+directory, because this repo previously held a Create React App project and any
+Vercel project created from it will still have **Output Directory = `build`**
+saved in its settings, which fails with:
+
+> No Output Directory named "build" found after the Build completed.
+
+`vercel.json` overrides that. If it still fails, clear the override in
+Vercel → Project → Settings → Build & Development Settings: set Framework
+Preset to **Next.js** and leave Output Directory on the default.
+
 ## Layout
 
 ```

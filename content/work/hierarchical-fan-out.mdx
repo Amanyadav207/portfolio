@@ -21,13 +21,11 @@ and the end-to-end run sat at about 24 hours. A job that has no logical dependen
 of work should not have a concurrency ceiling, so the ceiling was coming from somewhere other than
 the work itself.
 
-<Facts
-  items={[
-    { k: "Before", v: "~24 hours end-to-end, ~800 effective workers" },
-    { k: "After", v: "Under 3 hours — a 10x reduction — at 8,000 workers" },
-    { k: "Shape of work", v: "Embarrassingly parallel; no cross-slice dependencies" },
-  ]}
-/>
+| Measure | Value |
+| --- | --- |
+| Before | ~24 hours end-to-end, ~800 effective workers |
+| After | Under 3 hours — a 10x reduction — at 8,000 workers |
+| Shape of work | Embarrassingly parallel; no cross-slice dependencies |
 
 ## Constraints
 

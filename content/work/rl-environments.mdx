@@ -1,0 +1,30 @@
+---
+title: "Computer-use RL environments"
+summary: "Ten-plus environments that let an autonomous agent drive real enterprise web applications — built to train and score agents against, not to demo."
+context: "Scaler AI Labs"
+period: "2026"
+stack: ["Python", "FastAPI", "reinforcement learning"]
+order: 4
+nda: true
+---
+
+## Problem
+
+An agent that operates a computer the way a person does — reading the screen, clicking, typing —
+cannot be trained or evaluated against a static dataset. It needs an environment: a real application
+it can act on, with a defined starting state, a way to observe the result, and a way to judge whether
+a task was completed.
+
+I built more than ten of these against real enterprise web applications spanning observability, ERP,
+accounting, and creative tooling. The engineering problem is less about any single application than
+about making a heterogeneous set of them behave like a uniform interface an agent and a training loop
+can both rely on.
+
+## Constraints
+
+- Deterministic starting state. A task that begins from a different state each run cannot produce a
+  comparable score.
+- Reproducibility across runs and machines, because the output was consumed by other teams as a
+  benchmark.
+- The applications were third-party and not built for this, so every environment had to work through
+  the interface the application actually presents.

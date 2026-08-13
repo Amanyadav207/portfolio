@@ -1,0 +1,79 @@
+---
+title: "Conflux — a real-time collaborative code editor"
+summary: "CRDT-based synchronisation under a VS Code-grade editing surface, so several people can edit one file with no conflict resolution step and no server arbitrating edits."
+context: "Personal project"
+stack: ["TypeScript", "Yjs (CRDT)", "WebSockets", "Monaco Editor"]
+featured: true
+order: 3
+---
+
+The demo below is the real thing, not a recording. Two independent replicas, each bound to its own
+editor. Type in either pane and the other converges. Disconnect them, edit both, then reconnect and
+watch the divergence resolve without anyone choosing a winner.
+
+<ConfluxDemo />
+
+Both replicas here live in one browser tab and hand updates to each other directly, so the demo needs
+no server and works offline. In Conflux itself the same updates travel over a room-scoped WebSocket.
+
+[Source on GitHub →](https://github.com/Amanyadav207/conflux)
+
+## Problem
+
+Two people editing one file at the same time is a distributed-state problem in disguise. Each keeps a
+local copy so typing stays responsive, which means each can diverge, which means the copies must be
+reconciled — and the reconciliation must never produce a result that surprises either author or
+silently discards work.
+
+The naive fix, locking the file or a region of it, trades the problem for a worse one: collaboration
+becomes turn-taking. What I wanted was for both people to type continuously into the same document
+and for the result to be correct by construction.
+
+## Constraints
+
+- Local edits had to apply instantly. Any round-trip before a keystroke appears is fatal to the
+  feel of an editor.
+- Convergence could not depend on message ordering or on a server being authoritative, because
+  neither can be guaranteed over a real WebSocket.
+- The editing surface had to be genuinely good — syntax highlighting, multiple cursors, keybindings —
+  which meant embedding a real editor rather than a textarea.
+
+## Approach: CRDT rather than OT
+
+Two established answers exist. Operational transformation reconciles by transforming each incoming
+operation against operations it did not see, which requires a consistent transformation order and in
+practice a central server to establish it. A CRDT instead defines the data structure so that
+concurrent updates commute: apply them in any order, and every replica lands in the same state.
+
+I chose the CRDT because it moves correctness out of the server and into the data structure. The
+server stops being a decision-maker and becomes a relay — which makes reconnection, offline editing,
+and multiple network paths ordinary cases rather than special ones. The cost is metadata: a CRDT
+remembers more per character than the text itself.
+
+Conflux uses Yjs for that layer, with `y-monaco` binding the shared text type to a Monaco model, so
+the editor is driven by the replica rather than the other way round.
+
+<ConfluxArch />
+
+## Tradeoffs
+
+**Metadata growth.** Commutativity is bought with per-character bookkeeping that outlives the
+characters themselves — deletions leave tombstones. A long-lived document accumulates state that the
+visible text does not account for, so compaction stops being optional at some size.
+
+**No authority means no arbiter.** Nothing on the server can reject an edit, which is exactly what
+makes the model robust and also means anything resembling validation or permissions has to be
+enforced somewhere else entirely.
+
+**Convergent is not the same as intended.** CRDTs guarantee that replicas agree; they do not
+guarantee the merged result is what either author had in mind. Two people restructuring the same
+function concurrently will get a consistent document that may still be nonsense.
+
+**Editor weight.** Monaco is a large dependency for a browser tab, which is the price of the editing
+experience being credible.
+
+## What I would do differently
+
+I would separate transport from document logic from the start. It is tempting to let the WebSocket
+layer know about document structure, and that coupling is what makes adding a second transport — a
+local provider for demos exactly like the one at the top of this page — harder than it should be.

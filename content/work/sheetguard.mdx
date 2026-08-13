@@ -1,0 +1,81 @@
+---
+title: "SheetGuard — schema-aware ETL with a dead-letter queue"
+summary: "Moving spreadsheet data into PostgreSQL without letting one malformed row corrupt the load: field-level validation, idempotent inserts, and invalid records quarantined rather than dropped."
+context: "Personal project"
+stack: ["Python", "PostgreSQL", "pandas", "Google Sheets API"]
+order: 8
+---
+
+## Problem
+
+Spreadsheets are where organisational data actually lives, and they enforce nothing. A column that
+holds an integer today holds `N/A` tomorrow; the same person appears twice with different
+capitalisation; a required field is simply blank. Loading that directly into a relational database
+gives you two bad options — the insert fails partway through and leaves the table in an unknown
+state, or it succeeds and quietly writes garbage that every downstream query now has to defend
+against.
+
+SheetGuard ingests a Google Sheet into PostgreSQL under the assumption that the source is untrusted.
+The goal is not to make every row load; it is to make the outcome of a load always knowable.
+
+## Constraints
+
+- **Re-runnable.** The pipeline had to tolerate being run twice on the same sheet without producing
+  duplicates, because in practice it will be.
+- **No silent loss.** A row that fails validation cannot simply be skipped — you need to be able to
+  answer "what didn't make it, and why" after the fact.
+- **Partial failure must not corrupt state.** One bad record should not take the run down or leave
+  half the sheet loaded.
+
+## Approach
+
+The pipeline is split into four stages with a single responsibility each — extract, transform,
+validate, load — so a failure can always be attributed to a stage rather than to "the ETL".
+
+**Extract** pulls the sheet through the Google Sheets API into a DataFrame.
+
+**Transform** normalises before judging anything: column names to lowercase underscores, emails
+lowercased and trimmed, years coerced to integers, whitespace stripped from names and departments.
+Deduplication happens here, keyed on email, keeping the first occurrence.
+
+**Validate** applies field-level rules rather than a single schema check, so failures name the field
+that caused them: email format and length, name length and permitted character set, year as an
+integer between 1 and 4, phone as at least ten digits, department length. Optional fields are
+allowed to be absent but not allowed to be wrong.
+
+**Load** inserts with `ON CONFLICT (email) DO NOTHING`. That single clause is what makes the whole
+pipeline idempotent — the uniqueness guarantee lives in the database, where it can be enforced,
+rather than in application logic that has to be right every time. Missing departments are created on
+the fly so a referenced foreign key never blocks a valid student row.
+
+<EtlFlow />
+
+The two supporting tables are what make the pipeline observable. Rows that fail validation are
+written to `invalid_rows` as JSON with the reason attached — a dead-letter queue, so bad data is
+quarantined rather than discarded, and the main pipeline keeps running. Each execution appends to
+`etl_runs` with totals for rows seen, valid, invalid and inserted.
+
+## Tradeoffs
+
+**`DO NOTHING` silently ignores conflicts.** It buys idempotency at the cost of never updating an
+existing record — a corrected email in the sheet will not propagate. `DO UPDATE` would fix that and
+would also mean the source could overwrite good data with bad. For an append-mostly source, ignoring
+is the safer default; for a source of truth, it would be the wrong one.
+
+**Dedup keeps the first occurrence**, which is arbitrary when two rows disagree. It is deterministic,
+which matters more than being right in a case the data cannot resolve.
+
+**A dead-letter queue is only useful if someone reads it.** Quarantining invalid rows converts a loud
+failure into a quiet one, so the `etl_runs` metrics are load-bearing: they are the thing that makes a
+run with 400 invalid rows distinguishable from a clean one.
+
+**Validation lives in Python, not in the schema.** Application-level checks give better error
+messages than constraint violations, at the cost of being bypassable by anything that writes to the
+database directly.
+
+## What I would do differently
+
+I would put the pipeline on a schedule with alerting driven off the `etl_runs` table rather than
+running it by hand — the metrics exist precisely to be watched, and right now nothing watches them.
+
+[Source on GitHub →](https://github.com/Amanyadav207/sheetguard)

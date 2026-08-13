@@ -1,0 +1,48 @@
+---
+title: "Activity capture and analytics platform"
+summary: "A desktop capture agent, its Python analysis backend, and analytics APIs over Postgres and ClickHouse serving operator dashboards as event volume grew."
+context: "Scaler AI Labs"
+period: "2026"
+stack: ["Python", "Next.js", "Tauri", "PostgreSQL", "ClickHouse"]
+order: 5
+nda: true
+---
+
+## Problem
+
+A desktop application captured what a user was doing inside other applications — periodic screenshots
+paired with the operating system accessibility tree — and classified that into in-app activity.
+Downstream, operators needed dashboards over the result.
+
+Two distinct problems sit inside that. The capture side is a latency- and fidelity-sensitive agent
+running on someone's machine ([the cross-platform half of it is written up separately](/work/accessibility-tree-parity)).
+The analytics side is a volume problem: every captured interval becomes events, events accumulate
+without bound, and dashboards that were fast at launch stop being fast.
+
+## Constraints
+
+- Capture ran continuously on user machines, so the agent had a real CPU and memory budget.
+- Dashboards were interactive, which puts a ceiling on acceptable query latency that does not move as
+  data grows.
+- Event volume only ever increased.
+
+## Approach
+
+The analytics split followed the shape of the queries. Postgres stayed the system of record for
+transactional, row-oriented access — the things that need consistency and point lookups. The heavy
+aggregate queries behind dashboards moved to ClickHouse, whose column orientation suits scans over
+one or two fields across a very large number of rows.
+
+The reason this works is that dashboard queries touch few columns and enormous numbers of rows, which
+is close to the worst case for a row store and close to the best case for a column store. Keeping
+both meant neither had to be bent into a shape it is bad at.
+
+## Tradeoffs
+
+Running two stores means the same data exists twice, in two shapes, and something has to keep them
+consistent. That is a real operational cost paid in exchange for query latency, and it introduces a
+staleness window that the dashboard's semantics have to be honest about.
+
+The alternative — pushing Postgres harder with rollup tables and aggressive indexing — is less
+infrastructure and less to reason about, and it works well until scan volume outgrows it. The
+question is not which is better but where the crossover sits.

@@ -1,0 +1,76 @@
+---
+title: "Cross-platform accessibility trees: macOS AX vs Windows UI Automation"
+summary: "Porting a UI capture agent to Windows, where the native accessibility tree returned far sparser element data — and restoring parity without touching the downstream classifier."
+context: "Scaler AI Labs"
+period: "2026"
+stack: ["Python", "Tauri", "macOS AX API", "Windows UI Automation"]
+featured: true
+order: 2
+nda: true
+---
+
+## Problem
+
+A desktop capture agent recorded what a user was doing in an application by pairing periodic
+screenshots with the operating system's accessibility tree: the same structured view of on-screen
+elements that a screen reader consumes. The tree is what makes the capture useful — a screenshot
+tells you pixels, the tree tells you that a particular cell in a particular grid holds a particular
+value.
+
+The agent worked on macOS, built against the AX API. Ported to Windows against UI Automation, the
+same interface produced a visibly thinner tree: fewer properties per element, and parts of the
+subtree missing from a default traversal. Downstream, a classifier that had been trained to read
+macOS-quality context was now being handed much less of it.
+
+<AxParity />
+
+## Constraints
+
+- The classifier downstream could not change. Whatever the capture agent produced on Windows had to
+  be interchangeable with the macOS output.
+- Capture ran continuously on a user's machine, so per-node work had a real cost — this could not
+  become a tree walk that pegged a core.
+- One agent, two platforms: the platform-specific part had to stay behind a narrow interface rather
+  than fork the whole capture path.
+
+## Why the two trees differ
+
+They are not the same abstraction wearing different names. macOS AX and Windows UI Automation differ
+in what a provider is obliged to expose and in how much a default traversal returns:
+
+- **Property richness.** A given control surfaces a different set of attributes on each platform,
+  and the union is not the same. Some macOS attributes have no direct UIA equivalent; some UIA
+  properties are only populated when a control implements the relevant pattern.
+- **Traversal depth.** A single walk does not necessarily reach the same nodes. Parts of a subtree
+  may only appear once you query a specific view of the tree rather than the default one.
+- **Provider quality.** Both APIs depend on the application implementing them, and the same vendor's
+  app is often more thoroughly instrumented on one platform than the other.
+
+## Approach
+
+Rather than try to make Windows return a macOS-shaped tree in one call, treat the default traversal
+as a starting point and enrich it: for each node, issue additional property queries, and walk
+children explicitly where the default view came back shallow. The platform layer is then responsible
+for producing a tree that satisfies one shared contract, and the classifier stays unaware of which
+operating system produced it.
+
+That framing matters more than any single query. The alternative — teaching the classifier to cope
+with two grades of input — would have put a platform conditional into the part of the system that
+should be most stable.
+
+## Tradeoffs
+
+Enrichment converts one cheap call into many small ones. Per-node queries cross a process boundary,
+so cost grows with tree size — and the trees that most need enrichment are the large, data-dense ones
+where enrichment costs the most. This is a direct trade of CPU on the user's machine for fidelity
+downstream.
+
+Keeping the contract fixed also means the Windows path carries permanent extra complexity. Anyone
+reading the platform layer sees macOS as the simple case and Windows as the one with a compensating
+pass, which is honest but asymmetric.
+
+## What I would do differently
+
+I would define the tree contract explicitly, in writing, before porting rather than during it. The
+macOS implementation had effectively become the specification, which meant the porting work and the
+work of discovering what the specification even was happened at the same time.

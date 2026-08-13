@@ -4,16 +4,21 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * First line is the thesis; the rest open a loop this site then closes — each
- * links to the write-up that answers it, so curiosity converts into a click.
- * Every phrase is literally true, and kept under ~44 characters so the block
- * stays within the three lines reserved for it.
+ * Qualities and intent, not a list of deeds — what someone would get if they
+ * hired him, rather than what he has already done. Kept concrete enough to be
+ * recognisably him instead of the usual "passionate, eager to learn" filler.
+ *
+ * The first three still link to the write-up that demonstrates the trait, so
+ * the claim is never just a claim. The last is an aspiration, so it stands on
+ * its own.
+ *
+ * Similar lengths, so the reserved height fills evenly.
  */
 const PHRASES: { text: string; href?: string }[] = [
-  { text: "make slow systems fast." },
-  { text: "found why adding workers stopped helping.", href: "/work/hierarchical-fan-out" },
-  { text: "made two people edit one file, no locks.", href: "/work/conflux" },
-  { text: "taught agents to click through real apps.", href: "/work/rl-environments" },
+  { text: "would rather understand it than work around it.", href: "/work/hierarchical-fan-out" },
+  { text: "get suspicious when something works first try.", href: "/work/accessibility-tree-parity" },
+  { text: "care more about correct than clever.", href: "/work/conflux" },
+  { text: "want to build infrastructure people rely on." },
 ];
 
 const TYPE_MS = 52;

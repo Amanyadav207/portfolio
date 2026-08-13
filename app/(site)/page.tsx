@@ -451,7 +451,7 @@ export default function HomePage() {
                 className="underline underline-offset-4"
                 style={{ color: "var(--a1)" }}
               >{`"${site.email}"`}</a>
-              {`,\n  "open_to":  "backend · systems · infrastructure",\n  "location": "${site.location}",\n  "resume":   `}
+              {`,\n  "open_to":  [\n    "backend · distributed systems",\n    "ai infrastructure · agent tooling",\n    "data & platform engineering"\n  ],\n  "location": "${site.location}",\n  "resume":   `}
               <a
                 href={site.resume}
                 target="_blank"

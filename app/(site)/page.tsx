@@ -97,12 +97,14 @@ export default function HomePage() {
               backend · distributed systems · ai infrastructure
             </p>
 
+            {/* A brief, not a status line — this stays true when the job
+                changes. Depth lives in the About section. */}
             <p
-              className="reading mt-5 max-w-[52ch] text-[16px] leading-[1.7]"
+              className="reading mt-5 max-w-[54ch] text-[16px] leading-[1.7]"
               style={{ color: "var(--muted)" }}
             >
-              Currently building computer-use RL environments and the data pipelines behind them at{" "}
-              <span style={{ color: "var(--fg)" }}>Scaler AI Labs</span>.
+              I care about the parts of a system that decide whether it holds up: how work gets
+              distributed, how state stays correct, and where the bottleneck actually is.
             </p>
 
 

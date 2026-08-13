@@ -2,7 +2,7 @@ export const site = {
   name: "Aman Yadav",
   // One-line positioning. Backend/distributed systems, not generalist web dev.
   positioning:
-    "Backend, distributed systems and AI infrastructure engineer. I build the environments, pipelines and services that AI systems run on — and make them fast.",
+    "Backend and distributed systems engineer building AI infrastructure — computer-use RL environments, the pipelines behind them, and the services that keep them fast.",
   role: "Backend & AI Infrastructure Engineer",
   location: "Bengaluru, India",
   email: "aman1374y@gmail.com",
@@ -24,45 +24,50 @@ export const site = {
 } as const;
 
 /**
- * Headline figures. Every one of these came from Aman directly (résumé or
- * positioning brief) — nothing here is inferred. The dataset size is
- * deliberately absent; see the disclosure note on the fan-out page.
+ * Headline figures. Every one came from Aman directly (résumé or positioning
+ * brief) — nothing is inferred. Each `value` is a single scannable token; the
+ * comparison lives in `detail` so the number itself stays readable at a
+ * glance. Dataset size is deliberately absent — see the disclosure note on the
+ * fan-out write-up.
  */
 export const metrics = [
-  { value: "10x", label: "pipeline speedup", detail: "24 h → under 3 h" },
-  { value: "800 → 8,000", label: "concurrent workers", detail: "after tree fan-out" },
-  { value: "10+", label: "RL environments", detail: "built for agent training" },
-  { value: "500+", label: "users shipped to", detail: "as founding engineer" },
+  { value: "10x", label: "faster pipeline", detail: "24 h → under 3 h" },
+  { value: "8,000", label: "concurrent workers", detail: "up from ~800" },
+  { value: "10+", label: "RL environments", detail: "agent training & eval" },
+  { value: "500+", label: "users", detail: "as the only engineer" },
 ] as const;
 
 /**
- * Bio. Built from how Aman describes his own work on his GitHub profile —
- * correctness, maintainability and performance under real constraints —
- * rather than generic portfolio copy.
+ * Bio. Leads with current work rather than the framing on the GitHub profile,
+ * which predates the Scaler AI Labs role and buries the most significant thing
+ * he does.
  */
 export const bio = [
-  "I'm a backend engineer. Most of what I care about sits below the interface: schema design, idempotent pipelines, authentication that holds up under attack, and API contracts that don't leak their implementation.",
-  "The part I find interesting is everything past “it works”. A pipeline that runs is not the same as one that can be safely re-run. An endpoint returning 200 is not the same as one that stays correct when two clients race. Most of my work has been locating the point where a system quietly stops being correct — or stops being fast — and moving it.",
-  "Lately that has meant AI infrastructure: computer-use RL environments that autonomous agents are trained and evaluated in, and the pipelines that process what they produce, at Scaler AI Labs. Before that I was the founding engineer on an AI stock-research platform — a Go backend, scheduled ingestion, and a tool-calling agent that answered equity questions in plain English.",
+  "I build the infrastructure AI systems run on. At Scaler AI Labs that means computer-use environments where autonomous agents are trained and evaluated, the pipelines that process what those agents produce, and the analytics that make the result legible to someone operating it.",
+  "The problems I like are the ones where a system stops scaling for reasons that have nothing to do with the work it is doing. A job with no dependency between its units should not have a concurrency ceiling — when it has one anyway, the bottleneck is somewhere nobody was timing. Most of what I have shipped came from finding that place and moving it.",
+  "Before this I was the only engineer alongside the founder on an AI stock-research platform: Go APIs over market data, scheduled ingestion, a tool-calling agent that answered equity questions in plain English, and the deployment underneath all of it. On my own time I have built a CRDT collaborative editor, an ETL pipeline that quarantines bad rows instead of dropping them, and an in-memory cache in Go.",
 ] as const;
 
-/** How that philosophy shows up in practice — his own four themes. */
+/**
+ * Four positions, each one earned by a write-up on this site rather than
+ * borrowed from a profile README.
+ */
 export const principles = [
   {
-    k: "schema-aware",
-    v: "Validate before insertion, so partial failures never corrupt downstream state.",
+    k: "distribution > addition",
+    v: "Past a point, more workers make things slower. What they all pull from is usually the real limit.",
   },
   {
-    k: "idempotent",
-    v: "Re-running a pipeline should be safe, not a source of duplicates.",
+    k: "correct under concurrency",
+    v: "Convergence and idempotency by construction, so re-runs and races are ordinary cases rather than bugs.",
   },
   {
-    k: "secure by default",
-    v: "Design auth for the attack surface, not the happy path.",
+    k: "measure the phase",
+    v: "A job timed end-to-end hides the phase that scales inversely. Split the timer before scaling anything.",
   },
   {
-    k: "measured",
-    v: "Time the phase, not the job — averages hide the bottleneck.",
+    k: "fail loudly, lose nothing",
+    v: "Bad input gets quarantined with its reason attached — never silently skipped.",
   },
 ] as const;
 
@@ -80,7 +85,7 @@ export const experience = [
     current: true,
     url: "https://evaratus.com/",
     blurb:
-      "Building computer-use RL environments for autonomous-agent training, the data pipelines that process what they produce, and the analytics serving operator dashboards. Also own the capture backend and dashboard for a cross-platform desktop monitoring app.",
+      "Building computer-use RL environments that autonomous agents are trained and evaluated in, and the data infrastructure around them — a distribution redesign that took one pipeline from 24 hours to under 3, and analytics split across Postgres and ClickHouse to keep dashboards responsive as event volume grew. Also own the capture backend and dashboard for a cross-platform desktop monitoring app.",
   },
   {
     company: "Ticker360",
@@ -91,7 +96,7 @@ export const experience = [
     current: false,
     url: "https://www.linkedin.com/company/ticker360/",
     blurb:
-      "Sole engineer alongside the cofounder on a greenfield AI stock-research platform. Took it from landing page to 500+ users, owning the Next.js front end, Go backend, ingestion pipelines and deployment.",
+      "The only engineer alongside the founder, from landing page to 500+ users. Built low-latency Go APIs over NASDAQ/NYSE data with concurrent vendor fetches, moved all vendor traffic off the request path into scheduled ingestion, and shipped a Python service where a tool-calling agent answered equity questions in plain English.",
   },
 ] as const;
 

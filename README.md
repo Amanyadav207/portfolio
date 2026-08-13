@@ -24,9 +24,20 @@ saved in its settings, which fails with:
 
 > No Output Directory named "build" found after the Build completed.
 
-`vercel.json` overrides that. If it still fails, clear the override in
-Vercel → Project → Settings → Build & Development Settings: set Framework
-Preset to **Next.js** and leave Output Directory on the default.
+`vercel.json` sets `framework: null` on purpose. `out/` is a finished static
+site with no server code, so Vercel should serve it directly rather than run
+its Next.js builder — that builder looks for `.next` internals like
+`routes-manifest.json`, which a completed export does not contain:
+
+> The file "/vercel/path0/out/routes-manifest.json" couldn't be found.
+
+Setting `framework: "nextjs"` together with `outputDirectory: "out"` produces
+exactly that error, because the two contradict each other.
+
+The alternative, if you ever want Vercel's Next.js runtime (ISR, image
+optimisation, middleware), is to drop `output: "export"` from
+`next.config.mjs`, delete `vercel.json`, and set Framework Preset to Next.js
+in the dashboard.
 
 ## Layout
 

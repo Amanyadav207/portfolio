@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getAllDocs } from "@/lib/content";
-import { experience, metrics, site } from "@/lib/site";
+import { bio, experience, metrics, principles, site } from "@/lib/site";
 import { repoGroups } from "@/lib/repos";
 import { FanoutHero } from "@/components/fanout-hero";
 import { Reveal } from "@/components/reveal";
@@ -10,50 +10,30 @@ const STACK = [
   "PostgreSQL", "ClickHouse", "MongoDB", "Redis", "Docker", "WebSockets", "CRDTs",
 ];
 
-function Aurora() {
+function SectionHead({
+  index,
+  id,
+  title,
+  action,
+}: {
+  index: string;
+  id: string;
+  title: string;
+  action?: { href: string; label: string };
+}) {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-      <div
-        className="aurora-blob"
-        style={{
-          top: "-14rem",
-          left: "-8rem",
-          width: "38rem",
-          height: "38rem",
-          background: "radial-gradient(circle, rgba(124,92,255,0.45), transparent 62%)",
-        }}
-      />
-      <div
-        className="aurora-blob"
-        style={{
-          top: "-6rem",
-          right: "-10rem",
-          width: "34rem",
-          height: "34rem",
-          background: "radial-gradient(circle, rgba(34,211,238,0.32), transparent 62%)",
-          animationDelay: "-7s",
-        }}
-      />
-      <div
-        className="aurora-blob"
-        style={{
-          top: "22rem",
-          left: "34%",
-          width: "30rem",
-          height: "30rem",
-          background: "radial-gradient(circle, rgba(74,222,128,0.18), transparent 65%)",
-          animationDelay: "-14s",
-        }}
-      />
-    </div>
-  );
-}
-
-function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
-  return (
-    <div data-reveal>
-      <p className="label">{kicker}</p>
-      <h2 className="mt-3 text-[clamp(1.75rem,4vw,2.5rem)] font-semibold">{title}</h2>
+    <div className="flex flex-wrap items-end justify-between gap-4" data-reveal>
+      <div>
+        <p className="comment label">
+          {index} — {id}
+        </p>
+        <h2 className="mt-3 text-[clamp(1.5rem,3.4vw,2.1rem)] font-medium">{title}</h2>
+      </div>
+      {action && (
+        <a href={action.href} target="_blank" rel="noreferrer" className="chip">
+          {action.label} <span aria-hidden>↗</span>
+        </a>
+      )}
     </div>
   );
 }
@@ -73,89 +53,126 @@ export default function HomePage() {
       <Reveal />
 
       {/* ================= hero ================= */}
-      <section className="relative overflow-hidden">
-        <Aurora />
+      <section className="relative overflow-hidden border-b" style={{ borderColor: "var(--line)" }}>
+        <div className="grid-bg" aria-hidden />
+        <div
+          className="glow"
+          style={{
+            top: "-16rem",
+            left: "8%",
+            width: "34rem",
+            height: "34rem",
+            background: "radial-gradient(circle, rgba(0,229,160,0.16), transparent 65%)",
+          }}
+          aria-hidden
+        />
+        <div
+          className="glow"
+          style={{
+            top: "-10rem",
+            right: "2%",
+            width: "30rem",
+            height: "30rem",
+            background: "radial-gradient(circle, rgba(56,189,248,0.14), transparent 65%)",
+          }}
+          aria-hidden
+        />
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 pb-20 pt-24 lg:grid-cols-[1.15fr_0.85fr] lg:pt-28">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 pb-16 pt-20 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <p className="eyebrow" data-reveal>
-              <span
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ background: "var(--a3)", boxShadow: "0 0 10px var(--a3)" }}
-              />
-              Available for roles · {site.location}
+            <p className="text-[12.5px]" data-reveal>
+              <span style={{ color: "var(--a1)" }}>aman@sst</span>
+              <span style={{ color: "var(--dim)" }}>:~$</span>{" "}
+              <span style={{ color: "var(--muted)" }}>whoami</span>
             </p>
 
             <h1
-              className="mt-7 text-[clamp(2.6rem,7vw,4.5rem)] font-semibold leading-[1.02]"
+              className="mt-6 text-[clamp(2rem,5.4vw,3.4rem)] font-medium leading-[1.06]"
               data-reveal
-              style={{ "--delay": "80ms" } as React.CSSProperties}
+              style={{ "--delay": "60ms" } as React.CSSProperties}
             >
               <span className="grad-text">Backend &amp; distributed</span>
               <br />
               <span className="grad-text">systems engineer</span>
+              <span className="cursor ml-1">▊</span>
             </h1>
 
             <p
-              className="mt-7 max-w-[54ch] text-[17.5px] leading-[1.7] text-[color:var(--muted)]"
+              className="reading mt-6 max-w-[56ch] text-[16.5px] leading-[1.7]"
+              style={{ color: "var(--muted)", "--delay": "120ms" } as React.CSSProperties}
               data-reveal
-              style={{ "--delay": "160ms" } as React.CSSProperties}
             >
               I make slow systems fast. Right now that means computer-use RL environments and the
-              pipelines behind them at{" "}
-              <span className="font-medium text-[color:var(--fg)]">Scaler AI Labs</span> — before
-              that, founding engineer on an AI stock-research platform.
+              pipelines behind them at <span style={{ color: "var(--fg)" }}>Scaler AI Labs</span> —
+              before that, founding engineer on an AI stock-research platform.
             </p>
 
             <div
-              className="mt-9 flex flex-wrap items-center gap-3"
+              className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[12px]"
+              style={{ color: "var(--dim)" }}
               data-reveal
-              style={{ "--delay": "240ms" } as React.CSSProperties}
             >
-              <a href={site.resume} target="_blank" rel="noreferrer" className="btn-grad">
-                Résumé <span aria-hidden>↓</span>
-              </a>
-              <a href={`mailto:${site.email}`} className="btn-ghost">
-                Get in touch <span aria-hidden>→</span>
-              </a>
+              <span>
+                <span style={{ color: "var(--a1)" }}>●</span> available for roles
+              </span>
+              <span>loc: {site.location}</span>
+              <span>yr: 3</span>
             </div>
 
             <div
-              className="mt-8 flex flex-wrap gap-2"
+              className="mt-8 flex flex-wrap items-center gap-2.5"
               data-reveal
-              style={{ "--delay": "300ms" } as React.CSSProperties}
+              style={{ "--delay": "180ms" } as React.CSSProperties}
             >
+              <a href={site.resume} target="_blank" rel="noreferrer" className="btn-primary">
+                resume.pdf <span aria-hidden>↓</span>
+              </a>
+              <a href={`mailto:${site.email}`} className="btn-ghost">
+                get in touch <span aria-hidden>→</span>
+              </a>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-2" data-reveal>
               {site.links.map((l) => (
                 <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className="chip">
-                  {l.label}
-                  <span aria-hidden className="opacity-60">↗</span>
+                  {l.label.toLowerCase()}
+                  <span aria-hidden className="opacity-50">↗</span>
                 </a>
               ))}
             </div>
           </div>
 
           <div
-            className="glass p-6 lg:p-7"
+            className="panel panel-brackets p-5"
             data-reveal
-            style={{ "--delay": "200ms" } as React.CSSProperties}
+            style={{ "--delay": "140ms" } as React.CSSProperties}
           >
-            <p className="label mb-4">Hierarchical fan-out</p>
+            <div
+              className="mb-4 flex items-center justify-between border-b pb-3"
+              style={{ borderColor: "var(--line)" }}
+            >
+              <span className="label">fan-out.svc</span>
+              <span className="text-[11px]" style={{ color: "var(--a1)" }}>
+                ● running
+              </span>
+            </div>
             <FanoutHero />
           </div>
         </div>
 
         {/* stack marquee */}
-        <div className="relative border-y" style={{ borderColor: "var(--line)" }}>
-          <div className="flex overflow-hidden py-4">
-            <div className="marquee-track flex shrink-0 items-center gap-10 pr-10">
+        <div className="relative border-t" style={{ borderColor: "var(--line)" }}>
+          <div className="flex overflow-hidden py-3">
+            <div className="marquee-track flex shrink-0 items-center gap-8 pr-8">
               {[...STACK, ...STACK].map((tech, i) => (
                 <span
                   key={`${tech}-${i}`}
-                  className="whitespace-nowrap font-mono text-[13px] text-[color:var(--dim)]"
+                  className="whitespace-nowrap text-[12.5px]"
+                  style={{ color: "var(--dim)" }}
                 >
                   {tech}
-                  <span className="ml-10 opacity-40" style={{ color: "var(--a2)" }}>
-                    ✦
+                  <span className="ml-8 opacity-50" style={{ color: "var(--a1)" }}>
+                    ::
                   </span>
                 </span>
               ))}
@@ -165,44 +182,85 @@ export default function HomePage() {
       </section>
 
       {/* ================= metrics ================= */}
-      <section className="mx-auto max-w-6xl px-6 py-20">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="mx-auto max-w-6xl px-6 py-14">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {metrics.map((m, i) => (
             <div
               key={m.label}
-              className="glass glass-hover p-6"
+              className="panel panel-hover p-5"
               data-reveal
-              style={{ "--delay": `${i * 70}ms` } as React.CSSProperties}
+              style={{ "--delay": `${i * 60}ms` } as React.CSSProperties}
             >
+              <p className="label mb-3">{String(i + 1).padStart(2, "0")}</p>
               <p
-                className="text-[clamp(1.6rem,3vw,2.1rem)] font-semibold tracking-[-0.03em]"
-                style={{
-                  background: "linear-gradient(100deg, #c4b5fd, #67e8f9)",
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  color: "transparent",
-                }}
+                className="text-[clamp(1.4rem,2.6vw,1.85rem)] font-medium tracking-[-0.04em]"
+                style={{ color: i % 2 ? "var(--a2)" : "var(--a1)" }}
               >
                 {m.value}
               </p>
-              <p className="mt-2 text-[14px] text-[color:var(--fg)]">{m.label}</p>
-              <p className="mt-1 font-mono text-[11px] text-[color:var(--dim)]">{m.detail}</p>
+              <p className="mt-2 text-[13px]" style={{ color: "var(--fg)" }}>
+                {m.label}
+              </p>
+              <p className="mt-0.5 text-[11px]" style={{ color: "var(--dim)" }}>
+                {m.detail}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ================= experience ================= */}
-      <section id="experience" className="mx-auto max-w-6xl px-6 py-16">
-        <SectionTitle kicker="01 — Experience" title="Where I've shipped" />
+      {/* ================= about ================= */}
+      <section id="about" className="mx-auto max-w-6xl px-6 py-14">
+        <SectionHead index="01" id="about" title="How I work" />
 
-        <div className="mt-10 space-y-4">
+        <div className="mt-9 grid gap-3 lg:grid-cols-[1.45fr_0.55fr]">
+          <div className="panel panel-brackets p-6 lg:p-8" data-reveal>
+            <div className="reading max-w-[68ch] space-y-5 text-[15.5px] leading-[1.75]" style={{ color: "var(--muted)" }}>
+              {bio.map((para, i) => (
+                <p key={i} className={i === 0 ? "text-[17px]" : undefined} style={i === 0 ? { color: "var(--fg)" } : undefined}>
+                  {para}
+                </p>
+              ))}
+            </div>
+
+            <p className="mt-7 border-t pt-5 text-[12px]" style={{ borderColor: "var(--line)", color: "var(--dim)" }}>
+              Third year · {site.education.map((e) => e.school).join(" + ")}
+            </p>
+          </div>
+
+          <div
+            className="panel p-6"
+            data-reveal
+            style={{ "--delay": "80ms" } as React.CSSProperties}
+          >
+            <p className="label">principles</p>
+            <dl className="mt-5 space-y-5">
+              {principles.map((pr) => (
+                <div key={pr.k}>
+                  <dt className="text-[13px]" style={{ color: "var(--a1)" }}>
+                    {pr.k}
+                  </dt>
+                  <dd className="reading mt-1 text-[13.5px] leading-relaxed" style={{ color: "var(--muted)" }}>
+                    {pr.v}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= experience ================= */}
+      <section id="experience" className="mx-auto max-w-6xl px-6 py-14">
+        <SectionHead index="02" id="experience" title="Where I've shipped" />
+
+        <div className="mt-9 space-y-3">
           {byRole.map(({ role, docs }, ri) => (
             <div
               key={role.company}
-              className="glass p-7 lg:p-8"
+              className="panel panel-brackets p-6 lg:p-7"
               data-reveal
-              style={{ "--delay": `${ri * 80}ms` } as React.CSSProperties}
+              style={{ "--delay": `${ri * 70}ms` } as React.CSSProperties}
             >
               <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
                 <div>
@@ -211,65 +269,73 @@ export default function HomePage() {
                       href={role.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-[clamp(1.25rem,2.6vw,1.6rem)] font-semibold transition-colors duration-300 hover:text-[color:var(--a2)]"
+                      className="text-[clamp(1.15rem,2.4vw,1.45rem)] font-medium transition-colors duration-300 hover:text-[color:var(--a1)]"
                     >
                       {role.company}
-                      <span className="ml-1.5 text-[13px] opacity-50" aria-hidden>
+                      <span className="ml-1.5 text-[12px] opacity-40" aria-hidden>
                         ↗
                       </span>
                     </a>
                     {role.current && (
                       <span
-                        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[11px]"
-                        style={{ background: "rgba(74,222,128,0.12)", color: "var(--a3)" }}
+                        className="rounded-[3px] border px-2 py-0.5 text-[11px]"
+                        style={{ borderColor: "var(--accent-line)", color: "var(--a1)" }}
                       >
-                        <span
-                          className="h-1.5 w-1.5 rounded-full"
-                          style={{ background: "var(--a3)", boxShadow: "0 0 8px var(--a3)" }}
-                        />
-                        current
+                        [current]
                       </span>
                     )}
                   </div>
-                  <p className="mt-1.5 text-[15px] text-[color:var(--muted)]">{role.role}</p>
+                  <p className="mt-1.5 text-[14px]" style={{ color: "var(--muted)" }}>
+                    {role.role}
+                  </p>
                 </div>
 
-                <div className="text-right">
-                  <p className="font-mono text-[12.5px] text-[color:var(--fg)]">{role.period}</p>
-                  <p className="font-mono text-[11.5px] text-[color:var(--dim)]">{role.location}</p>
+                <div className="text-right text-[12px]">
+                  <p style={{ color: "var(--fg)" }}>{role.period}</p>
+                  <p style={{ color: "var(--dim)" }}>{role.location}</p>
                 </div>
               </div>
 
-              <p className="mt-5 max-w-[74ch] text-[15px] leading-relaxed text-[color:var(--muted)]">
+              <p
+                className="reading mt-5 max-w-[76ch] text-[15px] leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
                 {role.blurb}
               </p>
 
               {docs.length > 0 && (
-                <div className="mt-7 border-t pt-6" style={{ borderColor: "var(--line)" }}>
-                  <p className="label mb-4">
-                    {docs.length} deep {docs.length === 1 ? "dive" : "dives"}
+                <div className="mt-6 border-t pt-5" style={{ borderColor: "var(--line)" }}>
+                  <p className="label mb-3.5">
+                    ls ./deep-dives — {docs.length} {docs.length === 1 ? "entry" : "entries"}
                   </p>
-                  <div className="grid gap-2.5 md:grid-cols-2">
+                  <div className="grid gap-2 md:grid-cols-2">
                     {docs.map((doc) => (
                       <Link
                         key={doc.slug}
                         href={`/work/${doc.slug}`}
-                        className="group rounded-xl border p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-[color:var(--line-2)] hover:bg-[color:var(--surface)]"
-                        style={{ borderColor: "var(--line)" }}
+                        className="group rounded-[5px] border p-4 transition-all duration-300 hover:-translate-y-0.5"
+                        style={{ borderColor: "var(--line)", background: "var(--bg-2)" }}
                       >
                         <span className="flex items-start justify-between gap-3">
-                          <span className="text-[15px] font-medium leading-snug transition-colors duration-300 group-hover:text-[color:var(--a2)]">
+                          <span className="text-[14px] font-medium leading-snug transition-colors duration-300 group-hover:text-[color:var(--a1)]">
                             {doc.title}
                           </span>
                           <span
-                            className="shrink-0 text-[13px] text-[color:var(--dim)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                            className="shrink-0 text-[12px] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                            style={{ color: "var(--dim)" }}
                             aria-hidden
                           >
                             ↗
                           </span>
                         </span>
-                        <span className="mt-2 block text-[13.5px] leading-relaxed text-[color:var(--muted)]">
+                        <span
+                          className="reading mt-2 block text-[13.5px] leading-relaxed"
+                          style={{ color: "var(--muted)" }}
+                        >
                           {doc.summary}
+                        </span>
+                        <span className="mt-3 block text-[10.5px]" style={{ color: "var(--dim)" }}>
+                          ~/work/{doc.slug}
                         </span>
                       </Link>
                     ))}
@@ -282,46 +348,42 @@ export default function HomePage() {
       </section>
 
       {/* ================= projects ================= */}
-      <section id="projects" className="mx-auto max-w-6xl px-6 py-16">
-        <SectionTitle kicker="02 — Projects" title="Built on my own time" />
+      <section id="projects" className="mx-auto max-w-6xl px-6 py-14">
+        <SectionHead index="03" id="projects" title="Built on my own time" />
 
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
+        <div className="mt-9 grid gap-3 md:grid-cols-2">
           {projects.map((doc, i) => (
             <Link
               key={doc.slug}
               href={`/work/${doc.slug}`}
-              className="glass glass-hover group relative flex flex-col overflow-hidden p-7"
+              className="panel panel-brackets panel-hover group flex flex-col p-6"
               data-reveal
-              style={{ "--delay": `${i * 80}ms` } as React.CSSProperties}
+              style={{ "--delay": `${i * 70}ms` } as React.CSSProperties}
             >
-              <span
-                className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
-                style={{ background: "rgba(124,92,255,0.5)" }}
-                aria-hidden
-              />
-              <div className="relative flex items-start justify-between gap-4">
+              <div className="flex items-start justify-between gap-4">
+                <span className="label">{String(i + 1).padStart(2, "0")}</span>
                 <span
-                  className="rounded-full px-2.5 py-1 font-mono text-[11px]"
-                  style={{ background: "var(--accent-dim)", color: "#c4b5fd" }}
-                >
-                  {doc.stack?.[0] ?? "Project"}
-                </span>
-                <span
-                  className="text-[15px] text-[color:var(--dim)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  className="text-[13px] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  style={{ color: "var(--dim)" }}
                   aria-hidden
                 >
                   ↗
                 </span>
               </div>
 
-              <h3 className="relative mt-5 text-[19px] font-semibold">{doc.title}</h3>
+              <h3 className="mt-4 text-[17px] font-medium transition-colors duration-300 group-hover:text-[color:var(--a1)]">
+                {doc.title}
+              </h3>
 
-              <p className="relative mt-3 max-w-[62ch] flex-1 text-[15px] leading-relaxed text-[color:var(--muted)]">
+              <p
+                className="reading mt-3 max-w-[62ch] flex-1 text-[14.5px] leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
                 {doc.summary}
               </p>
 
               {doc.stack && (
-                <div className="relative mt-6 flex flex-wrap gap-1.5">
+                <div className="mt-5 flex flex-wrap gap-1.5">
                   {doc.stack.map((s) => (
                     <span key={s} className="tag">
                       {s}
@@ -335,48 +397,43 @@ export default function HomePage() {
       </section>
 
       {/* ================= open source ================= */}
-      <section id="open-source" className="mx-auto max-w-6xl px-6 py-16">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <SectionTitle kicker="03 — Open source" title="Things I build to learn" />
-          <a
-            href={site.links[0].href}
-            target="_blank"
-            rel="noreferrer"
-            className="chip"
-            data-reveal
-          >
-            All repositories <span aria-hidden>↗</span>
-          </a>
-        </div>
+      <section id="open-source" className="mx-auto max-w-6xl px-6 py-14">
+        <SectionHead
+          index="04"
+          id="open-source"
+          title="Things I build to learn"
+          action={{ href: site.links[0].href, label: "all repositories" }}
+        />
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <div className="mt-9 grid gap-3 md:grid-cols-3">
           {repoGroups.map((g, gi) => (
             <div
               key={g.group}
-              className="glass p-6"
+              className="panel p-5"
               data-reveal
-              style={{ "--delay": `${gi * 80}ms` } as React.CSSProperties}
+              style={{ "--delay": `${gi * 70}ms` } as React.CSSProperties}
             >
               <p className="label" style={{ color: "var(--a2)" }}>
                 {g.group}
               </p>
-              <ul className="mt-5 space-y-5">
+              <ul className="mt-4 space-y-4">
                 {g.repos.map((r) => (
                   <li key={r.name}>
                     <a href={r.url} target="_blank" rel="noreferrer" className="group block">
-                      <span className="flex items-baseline gap-2">
-                        <span className="font-mono text-[13.5px] transition-colors duration-300 group-hover:text-[color:var(--a2)]">
+                      <span className="flex items-baseline gap-1.5">
+                        <span style={{ color: "var(--dim)" }}>/</span>
+                        <span className="text-[13px] transition-colors duration-300 group-hover:text-[color:var(--a1)]">
                           {r.name}
                         </span>
-                        <span className="text-[11px] text-[color:var(--dim)]" aria-hidden>
-                          ↗
-                        </span>
                       </span>
-                      <span className="mt-1 block font-mono text-[10.5px] text-[color:var(--dim)]">
+                      <span className="mt-0.5 block text-[10.5px]" style={{ color: "var(--dim)" }}>
                         {r.language}
                       </span>
                       {r.note && (
-                        <span className="mt-1.5 block text-[13px] leading-snug text-[color:var(--muted)]">
+                        <span
+                          className="reading mt-1.5 block text-[13px] leading-snug"
+                          style={{ color: "var(--muted)" }}
+                        >
                           {r.note}
                         </span>
                       )}
@@ -390,27 +447,42 @@ export default function HomePage() {
       </section>
 
       {/* ================= contact ================= */}
-      <section id="contact" className="mx-auto max-w-6xl px-6 py-20">
-        <div className="glass relative overflow-hidden px-8 py-16 text-center" data-reveal>
-          <span
-            className="pointer-events-none absolute left-1/2 top-0 h-64 w-[38rem] -translate-x-1/2 rounded-full blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(124,92,255,0.35), transparent 66%)" }}
-            aria-hidden
-          />
-          <h2 className="relative text-[clamp(1.9rem,5vw,3rem)] font-semibold">
-            <span className="grad-text">Let&rsquo;s build something fast</span>
-          </h2>
-          <p className="relative mx-auto mt-5 max-w-[54ch] text-[16px] leading-relaxed text-[color:var(--muted)]">
-            Open to backend, systems and infrastructure roles — and always happy to talk about a
-            pipeline that is slower than it should be.
-          </p>
-          <div className="relative mt-9 flex flex-wrap items-center justify-center gap-3">
-            <a href={`mailto:${site.email}`} className="btn-grad">
-              {site.email}
-            </a>
-            <a href={site.resume} target="_blank" rel="noreferrer" className="btn-ghost">
-              Résumé <span aria-hidden>↓</span>
-            </a>
+      <section id="contact" className="mx-auto max-w-6xl px-6 py-14">
+        <div className="panel panel-brackets relative overflow-hidden p-8 lg:p-12" data-reveal>
+          <div className="grid-bg opacity-40" aria-hidden />
+          <div className="relative">
+            <p className="prompt text-[12.5px]" style={{ color: "var(--muted)" }}>
+              cat contact.json
+            </p>
+            <pre
+              className="mt-4 overflow-x-auto text-[13px] leading-[1.9]"
+              style={{ color: "var(--muted)" }}
+            >
+              {`{\n  "email":    `}
+              <a
+                href={`mailto:${site.email}`}
+                className="underline underline-offset-4"
+                style={{ color: "var(--a1)" }}
+              >{`"${site.email}"`}</a>
+              {`,\n  "open_to":  "backend · systems · infrastructure",\n  "location": "${site.location}",\n  "resume":   `}
+              <a
+                href={site.resume}
+                target="_blank"
+                rel="noreferrer"
+                className="underline underline-offset-4"
+                style={{ color: "var(--a2)" }}
+              >{`"${site.resume}"`}</a>
+              {`\n}`}
+            </pre>
+
+            <div className="mt-8 flex flex-wrap gap-2.5">
+              <a href={`mailto:${site.email}`} className="btn-primary">
+                send mail <span aria-hidden>→</span>
+              </a>
+              <a href={site.resume} target="_blank" rel="noreferrer" className="btn-ghost">
+                resume.pdf <span aria-hidden>↓</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>

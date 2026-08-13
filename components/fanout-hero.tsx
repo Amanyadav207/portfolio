@@ -13,13 +13,17 @@ const TIERS: Tier[] = [
   { y: 250, n: 18 },
 ];
 
+const GUTTER = 52;
+
 function xs(n: number, inset: number) {
-  if (n === 1) return [W / 2];
-  const span = W - inset * 2;
-  return Array.from({ length: n }, (_, i) => inset + (i * span) / (n - 1));
+  const left = GUTTER + inset;
+  const right = W - inset;
+  if (n === 1) return [(left + right) / 2];
+  const span = right - left;
+  return Array.from({ length: n }, (_, i) => left + (i * span) / (n - 1));
 }
 
-const INSETS = [0, 124, 46, 20];
+const INSETS = [0, 96, 30, 8];
 
 /**
  * The hierarchical fan-out, animated: the manifest propagates tier by tier,
@@ -47,9 +51,9 @@ export function FanoutHero() {
       >
         <defs>
           <linearGradient id="fan-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#7c5cff" />
-            <stop offset="55%" stopColor="#22d3ee" />
-            <stop offset="100%" stopColor="#4ade80" />
+            <stop offset="0%" stopColor="#00e5a0" />
+            <stop offset="55%" stopColor="#38bdf8" />
+            <stop offset="100%" stopColor="#38bdf8" />
           </linearGradient>
           <filter id="fan-glow" x="-60%" y="-60%" width="220%" height="220%">
             <feGaussianBlur stdDeviation="4" result="b" />
@@ -92,7 +96,7 @@ export function FanoutHero() {
               cx={x}
               cy={tier.y}
               r={ti === 0 ? 8.5 : ti === 1 ? 5 : ti === 2 ? 3 : 2}
-              fill={ti === 0 ? "#7c5cff" : ti === 1 ? "#8b7bff" : ti === 2 ? "#22d3ee" : "#4ade80"}
+              fill={ti === 0 ? "#00e5a0" : ti === 1 ? "#2fd8b4" : ti === 2 ? "#38bdf8" : "#38bdf8"}
               filter={ti < 2 ? "url(#fan-glow)" : undefined}
               style={{ animationDelay: `${ti * 0.55 + i * 0.02}s` }}
             />
@@ -108,14 +112,14 @@ export function FanoutHero() {
             textAnchor="start"
             className="font-mono"
             fontSize="10"
-            fill="rgba(255,255,255,0.34)"
+            fill="rgba(255,255,255,0.3)"
           >
             {t}
           </text>
         ))}
       </svg>
 
-      <p className="mt-3 text-center font-mono text-[11px] text-[color:var(--dim)]">
+      <p className="mt-3 text-center text-[11px] text-[color:var(--dim)]">
         each tier seeds the next — 800 → 8,000 workers
       </p>
     </div>

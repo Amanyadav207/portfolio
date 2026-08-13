@@ -28,8 +28,8 @@ export const repoGroups: { group: string; repos: Repo[] }[] = [
       {
         name: "sheetguard",
         url: gh("sheetguard"),
-        language: "Python",
-        note: "ETL pipeline ingesting Google Sheets data into PostgreSQL, with validation, error handling and metrics tracking.",
+        language: "Python · PostgreSQL",
+        note: "Schema-aware ETL from Google Sheets into Postgres: multi-stage validation before insertion, idempotent ingestion so re-runs never duplicate, and a dead-letter queue that isolates bad records while the pipeline keeps running.",
       },
       {
         name: "secure-task-manager",

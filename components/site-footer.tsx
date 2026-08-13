@@ -12,8 +12,8 @@ export function SiteFooter() {
           </p>
           <a
             href={`mailto:${site.email}`}
-            className="mt-4 inline-block font-mono text-[13px]"
-            style={{ color: "var(--a2)" }}
+            className="mt-4 inline-block text-[13px]"
+            style={{ color: "var(--a1)" }}
           >
             {site.email}
           </a>
@@ -28,7 +28,7 @@ export function SiteFooter() {
                   href={item.href}
                   className="text-[13.5px] text-[color:var(--muted)] transition-colors duration-300 hover:text-[color:var(--fg)]"
                 >
-                  {item.label}
+                  {item.label.toLowerCase()}
                 </Link>
               </li>
             ))}
@@ -46,7 +46,7 @@ export function SiteFooter() {
                   rel="noreferrer"
                   className="text-[13.5px] text-[color:var(--muted)] transition-colors duration-300 hover:text-[color:var(--fg)]"
                 >
-                  {l.label}
+                  {l.label.toLowerCase()}
                 </a>
               </li>
             ))}
@@ -58,7 +58,7 @@ export function SiteFooter() {
         className="mx-auto max-w-6xl border-t px-6 py-6"
         style={{ borderColor: "var(--line)" }}
       >
-        <p className="font-mono text-[11.5px] text-[color:var(--dim)]">
+        <p className="text-[11.5px] text-[color:var(--dim)]">
           © {new Date().getFullYear()} {site.name}
         </p>
       </div>

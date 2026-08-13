@@ -36,11 +36,41 @@ export const metrics = [
 ] as const;
 
 /**
+ * Roles, newest first. `context` matches the `context` frontmatter on work
+ * write-ups, so each role automatically collects its own deep-dives.
+ */
+export const experience = [
+  {
+    company: "Scaler AI Labs",
+    context: "Scaler AI Labs",
+    role: "MTS Intern",
+    period: "Feb 2026 — Present",
+    location: "Bengaluru, India",
+    current: true,
+    url: "https://evaratus.com/",
+    blurb:
+      "Building computer-use RL environments for autonomous-agent training, the data pipelines that process what they produce, and the analytics serving operator dashboards. Also own the capture backend and dashboard for a cross-platform desktop monitoring app.",
+  },
+  {
+    company: "Ticker360",
+    context: "Ticker360",
+    role: "Founding Engineering Intern",
+    period: "Nov 2024 — Feb 2025",
+    location: "Remote",
+    current: false,
+    url: "https://www.linkedin.com/company/ticker360/",
+    blurb:
+      "Sole engineer alongside the cofounder on a greenfield AI stock-research platform. Took it from landing page to 500+ users, owning the Next.js front end, Go backend, ingestion pipelines and deployment.",
+  },
+] as const;
+
+/**
  * Section anchors on the single page. Absolute so they also work from the
  * project write-up pages.
  */
 export const nav = [
-  { label: "Work", href: "/#work" },
+  { label: "Experience", href: "/#experience" },
+  { label: "Projects", href: "/#projects" },
   { label: "Open source", href: "/#open-source" },
   { label: "Contact", href: "/#contact" },
 ] as const;

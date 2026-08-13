@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getAllDocs } from "@/lib/content";
-import { metrics, site } from "@/lib/site";
+import { experience, metrics, site } from "@/lib/site";
 import { repoGroups } from "@/lib/repos";
 import { FanoutHero } from "@/components/fanout-hero";
 import { Reveal } from "@/components/reveal";
@@ -60,8 +60,13 @@ function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
 
 export default function HomePage() {
   const work = getAllDocs("work");
-  const featured = work.filter((d) => d.featured);
-  const rest = work.filter((d) => !d.featured);
+  // Each role owns the write-ups produced during it; everything else is a
+  // personal project.
+  const byRole = experience.map((role) => ({
+    role,
+    docs: work.filter((d) => d.context === role.context),
+  }));
+  const projects = work.filter((d) => !experience.some((r) => r.context === d.context));
 
   return (
     <>
@@ -187,18 +192,105 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= work ================= */}
-      <section id="work" className="mx-auto max-w-6xl px-6 py-16">
-        <SectionTitle kicker="01 — Selected work" title="Problems worth writing up" />
+      {/* ================= experience ================= */}
+      <section id="experience" className="mx-auto max-w-6xl px-6 py-16">
+        <SectionTitle kicker="01 — Experience" title="Where I've shipped" />
+
+        <div className="mt-10 space-y-4">
+          {byRole.map(({ role, docs }, ri) => (
+            <div
+              key={role.company}
+              className="glass p-7 lg:p-8"
+              data-reveal
+              style={{ "--delay": `${ri * 80}ms` } as React.CSSProperties}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+                <div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <a
+                      href={role.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[clamp(1.25rem,2.6vw,1.6rem)] font-semibold transition-colors duration-300 hover:text-[color:var(--a2)]"
+                    >
+                      {role.company}
+                      <span className="ml-1.5 text-[13px] opacity-50" aria-hidden>
+                        ↗
+                      </span>
+                    </a>
+                    {role.current && (
+                      <span
+                        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[11px]"
+                        style={{ background: "rgba(74,222,128,0.12)", color: "var(--a3)" }}
+                      >
+                        <span
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ background: "var(--a3)", boxShadow: "0 0 8px var(--a3)" }}
+                        />
+                        current
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1.5 text-[15px] text-[color:var(--muted)]">{role.role}</p>
+                </div>
+
+                <div className="text-right">
+                  <p className="font-mono text-[12.5px] text-[color:var(--fg)]">{role.period}</p>
+                  <p className="font-mono text-[11.5px] text-[color:var(--dim)]">{role.location}</p>
+                </div>
+              </div>
+
+              <p className="mt-5 max-w-[74ch] text-[15px] leading-relaxed text-[color:var(--muted)]">
+                {role.blurb}
+              </p>
+
+              {docs.length > 0 && (
+                <div className="mt-7 border-t pt-6" style={{ borderColor: "var(--line)" }}>
+                  <p className="label mb-4">
+                    {docs.length} deep {docs.length === 1 ? "dive" : "dives"}
+                  </p>
+                  <div className="grid gap-2.5 md:grid-cols-2">
+                    {docs.map((doc) => (
+                      <Link
+                        key={doc.slug}
+                        href={`/work/${doc.slug}`}
+                        className="group rounded-xl border p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-[color:var(--line-2)] hover:bg-[color:var(--surface)]"
+                        style={{ borderColor: "var(--line)" }}
+                      >
+                        <span className="flex items-start justify-between gap-3">
+                          <span className="text-[15px] font-medium leading-snug transition-colors duration-300 group-hover:text-[color:var(--a2)]">
+                            {doc.title}
+                          </span>
+                          <span
+                            className="shrink-0 text-[13px] text-[color:var(--dim)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                            aria-hidden
+                          >
+                            ↗
+                          </span>
+                        </span>
+                        <span className="mt-2 block text-[13.5px] leading-relaxed text-[color:var(--muted)]">
+                          {doc.summary}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= projects ================= */}
+      <section id="projects" className="mx-auto max-w-6xl px-6 py-16">
+        <SectionTitle kicker="02 — Projects" title="Built on my own time" />
 
         <div className="mt-10 grid gap-4 md:grid-cols-2">
-          {featured.map((doc, i) => (
+          {projects.map((doc, i) => (
             <Link
               key={doc.slug}
               href={`/work/${doc.slug}`}
-              className={`glass glass-hover group relative flex flex-col overflow-hidden p-7 ${
-                i === 0 ? "md:col-span-2" : ""
-              }`}
+              className="glass glass-hover group relative flex flex-col overflow-hidden p-7"
               data-reveal
               style={{ "--delay": `${i * 80}ms` } as React.CSSProperties}
             >
@@ -212,7 +304,7 @@ export default function HomePage() {
                   className="rounded-full px-2.5 py-1 font-mono text-[11px]"
                   style={{ background: "var(--accent-dim)", color: "#c4b5fd" }}
                 >
-                  {doc.context}
+                  {doc.stack?.[0] ?? "Project"}
                 </span>
                 <span
                   className="text-[15px] text-[color:var(--dim)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -222,13 +314,7 @@ export default function HomePage() {
                 </span>
               </div>
 
-              <h3
-                className={`relative mt-5 font-semibold ${
-                  i === 0 ? "text-[clamp(1.4rem,3vw,1.9rem)]" : "text-[19px]"
-                }`}
-              >
-                {doc.title}
-              </h3>
+              <h3 className="relative mt-5 text-[19px] font-semibold">{doc.title}</h3>
 
               <p className="relative mt-3 max-w-[62ch] flex-1 text-[15px] leading-relaxed text-[color:var(--muted)]">
                 {doc.summary}
@@ -246,39 +332,12 @@ export default function HomePage() {
             </Link>
           ))}
         </div>
-
-        {/* remaining write-ups */}
-        <div className="glass mt-4 overflow-hidden" data-reveal>
-          {rest.map((doc, i) => (
-            <Link
-              key={doc.slug}
-              href={`/work/${doc.slug}`}
-              className="group flex flex-wrap items-center gap-x-4 gap-y-1 px-7 py-5 transition-colors duration-300 hover:bg-[color:var(--surface-2)]"
-              style={{ borderTop: i > 0 ? "1px solid var(--line)" : "none" }}
-            >
-              <span
-                className="font-mono text-[12px]"
-                style={{ color: "var(--a2)" }}
-              >
-                {String(featured.length + i + 1).padStart(2, "0")}
-              </span>
-              <span className="text-[16px] font-medium">{doc.title}</span>
-              <span className="font-mono text-[11.5px] text-[color:var(--dim)]">{doc.context}</span>
-              <span
-                className="ml-auto text-[14px] text-[color:var(--dim)] transition-transform duration-300 group-hover:translate-x-1"
-                aria-hidden
-              >
-                →
-              </span>
-            </Link>
-          ))}
-        </div>
       </section>
 
       {/* ================= open source ================= */}
       <section id="open-source" className="mx-auto max-w-6xl px-6 py-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <SectionTitle kicker="02 — Open source" title="Things I build to learn" />
+          <SectionTitle kicker="03 — Open source" title="Things I build to learn" />
           <a
             href={site.links[0].href}
             target="_blank"

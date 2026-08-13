@@ -2,12 +2,14 @@ import Link from "next/link";
 import { getAllDocs } from "@/lib/content";
 import { bio, experience, metrics, principles, site } from "@/lib/site";
 import { repoGroups } from "@/lib/repos";
-import { FanoutHero } from "@/components/fanout-hero";
+import { SystemMonitor } from "@/components/system-monitor";
+import { RotatingHeadline } from "@/components/rotating-headline";
 import { Reveal } from "@/components/reveal";
 
 const STACK = [
   "Go", "Python", "TypeScript", "Java", "Next.js", "FastAPI", "Gin",
   "PostgreSQL", "ClickHouse", "MongoDB", "Redis", "Docker", "WebSockets", "CRDTs",
+  "Reinforcement Learning", "OpenAI API", "CrewAI", "Agent tooling",
 ];
 
 function SectionHead({
@@ -80,49 +82,33 @@ export default function HomePage() {
 
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 pb-16 pt-20 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <p className="text-[12.5px]" data-reveal>
-              <span style={{ color: "var(--a1)" }}>aman@sst</span>
+            <p className="text-[12.5px]">
+              <span style={{ color: "var(--a1)" }}>aman@localhost</span>
               <span style={{ color: "var(--dim)" }}>:~$</span>{" "}
               <span style={{ color: "var(--muted)" }}>whoami</span>
             </p>
 
-            <h1
-              className="mt-6 text-[clamp(2rem,5.4vw,3.4rem)] font-medium leading-[1.06]"
-              data-reveal
-              style={{ "--delay": "60ms" } as React.CSSProperties}
-            >
-              <span className="grad-text">Backend &amp; distributed</span>
-              <br />
-              <span className="grad-text">systems engineer</span>
-              <span className="cursor ml-1">▊</span>
-            </h1>
+            <RotatingHeadline />
 
             <p
-              className="reading mt-6 max-w-[56ch] text-[16.5px] leading-[1.7]"
-              style={{ color: "var(--muted)", "--delay": "120ms" } as React.CSSProperties}
-              data-reveal
+              className="mt-5 text-[14px]"
+              style={{ color: "var(--a1)" }}
             >
-              I make slow systems fast. Right now that means computer-use RL environments and the
-              pipelines behind them at <span style={{ color: "var(--fg)" }}>Scaler AI Labs</span> —
-              before that, founding engineer on an AI stock-research platform.
+              backend · distributed systems · ai infrastructure
             </p>
 
-            <div
-              className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[12px]"
-              style={{ color: "var(--dim)" }}
-              data-reveal
+            <p
+              className="reading mt-5 max-w-[52ch] text-[16px] leading-[1.7]"
+              style={{ color: "var(--muted)" }}
             >
-              <span>
-                <span style={{ color: "var(--a1)" }}>●</span> available for roles
-              </span>
-              <span>loc: {site.location}</span>
-              <span>yr: 3</span>
-            </div>
+              Currently building computer-use RL environments and the data pipelines behind them at{" "}
+              <span style={{ color: "var(--fg)" }}>Scaler AI Labs</span>.
+            </p>
+
 
             <div
               className="mt-8 flex flex-wrap items-center gap-2.5"
-              data-reveal
-              style={{ "--delay": "180ms" } as React.CSSProperties}
+              
             >
               <a href={site.resume} target="_blank" rel="noreferrer" className="btn-primary">
                 resume.pdf <span aria-hidden>↓</span>
@@ -132,7 +118,7 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-2" data-reveal>
+            <div className="mt-6 flex flex-wrap gap-2">
               {site.links.map((l) => (
                 <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className="chip">
                   {l.label.toLowerCase()}
@@ -144,19 +130,18 @@ export default function HomePage() {
 
           <div
             className="panel panel-brackets p-5"
-            data-reveal
-            style={{ "--delay": "140ms" } as React.CSSProperties}
+            
           >
             <div
               className="mb-4 flex items-center justify-between border-b pb-3"
               style={{ borderColor: "var(--line)" }}
             >
-              <span className="label">fan-out.svc</span>
+              <span className="label">system.monitor</span>
               <span className="text-[11px]" style={{ color: "var(--a1)" }}>
-                ● running
+                ● live
               </span>
             </div>
-            <FanoutHero />
+            <SystemMonitor />
           </div>
         </div>
 

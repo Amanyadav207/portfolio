@@ -301,6 +301,36 @@
     animation: pulse-node-live 4.6s ease-in-out infinite;
   }
 
+  /* Chart scrolls left; the duplicated bar set makes it seamless. */
+  @keyframes chart-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-374px);
+    }
+  }
+
+  .chart-scroll {
+    animation: chart-scroll 14s linear infinite;
+  }
+
+  /* Pool cells fill in waves as work is picked up. */
+  @keyframes cell-fill {
+    0%,
+    100% {
+      opacity: 0.12;
+    }
+    35%,
+    55% {
+      opacity: 0.9;
+    }
+  }
+
+  .cell {
+    animation: cell-fill 4.2s ease-in-out infinite;
+  }
+
   @keyframes marquee {
     from {
       transform: translateX(0);
@@ -323,8 +353,14 @@
     .marquee-track,
     .cursor,
     .fan-node,
-    .packet {
+    .packet,
+    .chart-scroll,
+    .cell {
       animation: none !important;
+    }
+
+    .cell {
+      opacity: 0.6;
     }
 
     /* Without motion, show packets parked at their destination. */

@@ -2,8 +2,8 @@ export const site = {
   name: "Aman Yadav",
   // One-line positioning. Backend/distributed systems, not generalist web dev.
   positioning:
-    "Backend and distributed systems engineer. I work on data pipelines, concurrency, and the infrastructure that keeps them fast.",
-  role: "Backend & Distributed Systems Engineer",
+    "Backend, distributed systems and AI infrastructure engineer. I build the environments, pipelines and services that AI systems run on — and make them fast.",
+  role: "Backend & AI Infrastructure Engineer",
   location: "Bengaluru, India",
   email: "aman1374y@gmail.com",
   resume: "/Aman_Yadav_Resume.pdf",
@@ -43,7 +43,7 @@ export const metrics = [
 export const bio = [
   "I'm a backend engineer. Most of what I care about sits below the interface: schema design, idempotent pipelines, authentication that holds up under attack, and API contracts that don't leak their implementation.",
   "The part I find interesting is everything past “it works”. A pipeline that runs is not the same as one that can be safely re-run. An endpoint returning 200 is not the same as one that stays correct when two clients race. Most of my work has been locating the point where a system quietly stops being correct — or stops being fast — and moving it.",
-  "Right now that means computer-use RL environments and the data infrastructure behind them at Scaler AI Labs. Before that I was the founding engineer on an AI stock-research platform, which meant owning the whole path from Go ingestion to deployment.",
+  "Lately that has meant AI infrastructure: computer-use RL environments that autonomous agents are trained and evaluated in, and the pipelines that process what they produce, at Scaler AI Labs. Before that I was the founding engineer on an AI stock-research platform — a Go backend, scheduled ingestion, and a tool-calling agent that answered equity questions in plain English.",
 ] as const;
 
 /** How that philosophy shows up in practice — his own four themes. */

@@ -3,14 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Each line is a real claim backed by something on this page — the fan-out
- * work, the ETL pipeline, the CRDT editor, the RL environments.
+ * The first line is the thesis; the rest are the specific evidence for it.
+ * Concrete instances are both harder to challenge and more convincing than
+ * the general capability they imply.
  */
 const PHRASES = [
   "make slow systems fast.",
-  "build pipelines that stay correct.",
-  "scale workers without saturating the source.",
-  "ship the infrastructure AI agents run on.",
+  "took a 24-hour pipeline to under 3.",
+  "scaled a worker pool 800 → 8,000.",
+  "build environments AI agents train in.",
 ];
 
 const TYPE_MS = 52;

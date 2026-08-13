@@ -43,9 +43,9 @@ export const metrics = [
  * he does.
  */
 export const bio = [
-  "I build the infrastructure AI systems run on. At Scaler AI Labs that means computer-use environments where autonomous agents are trained and evaluated, the pipelines that process what those agents produce, and the analytics that make the result legible to someone operating it.",
-  "The problems I like are the ones where a system stops scaling for reasons that have nothing to do with the work it is doing. A job with no dependency between its units should not have a concurrency ceiling — when it has one anyway, the bottleneck is somewhere nobody was timing. Most of what I have shipped came from finding that place and moving it.",
-  "Before this I was the only engineer alongside the founder on an AI stock-research platform: Go APIs over market data, scheduled ingestion, a tool-calling agent that answered equity questions in plain English, and the deployment underneath all of it. On my own time I have built a CRDT collaborative editor, an ETL pipeline that quarantines bad rows instead of dropping them, and an in-memory cache in Go.",
+  "I build the environments AI agents are trained and evaluated in, and the data infrastructure behind them. At Scaler AI Labs that has meant computer-use environments across ten-plus enterprise applications, the pipeline that processes what those agents produce, and analytics split across Postgres and ClickHouse so operator dashboards stay responsive as event volume grows.",
+  "The problems I like are the ones where a system stops scaling for reasons that have nothing to do with the work it is doing. A job with no dependency between its units should not have a concurrency ceiling — when it had one anyway, the bottleneck turned out to be manifest distribution, not the job. Splitting the timer by phase is what made that visible.",
+  "Before that I was the only engineer alongside the founder on an AI stock-research platform, which meant I owned all of it: Go APIs over market data, scheduled ingestion, the tool-calling agent that answered equity questions in plain English, and the deployment underneath. On my own time I have built a CRDT collaborative editor, an ETL pipeline that quarantines bad rows instead of dropping them, and an in-memory cache in Go.",
 ] as const;
 
 /**

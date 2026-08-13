@@ -261,24 +261,44 @@
     color: var(--a1);
   }
 
-  @keyframes pulse-node {
+  /* Packets ride their edge path, pause, then repeat with the cycle. */
+  @keyframes travel {
+    0% {
+      offset-distance: 0%;
+      opacity: 0;
+    }
+    6% {
+      opacity: 1;
+    }
+    34% {
+      offset-distance: 100%;
+      opacity: 1;
+    }
+    40%,
+    100% {
+      offset-distance: 100%;
+      opacity: 0;
+    }
+  }
+
+  .packet {
+    offset-rotate: 0deg;
+    animation: travel 4.6s linear infinite;
+  }
+
+  @keyframes pulse-node-live {
     0%,
     100% {
-      opacity: 0.22;
+      opacity: 0.3;
     }
-    50% {
+    12%,
+    30% {
       opacity: 1;
     }
   }
 
-  @keyframes sweep {
-    0% {
-      stroke-dashoffset: 260;
-    }
-    60%,
-    100% {
-      stroke-dashoffset: 0;
-    }
+  .fan-node {
+    animation: pulse-node-live 4.6s ease-in-out infinite;
   }
 
   @keyframes marquee {
@@ -303,8 +323,14 @@
     .marquee-track,
     .cursor,
     .fan-node,
-    .fan-edge {
+    .packet {
       animation: none !important;
+    }
+
+    /* Without motion, show packets parked at their destination. */
+    .packet {
+      offset-distance: 100%;
+      opacity: 1;
     }
   }
 

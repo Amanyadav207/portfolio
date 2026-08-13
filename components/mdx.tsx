@@ -7,6 +7,7 @@ import { FanOutTree, FlatVsTree } from "./diagrams/fan-out";
 import { AxParity } from "./diagrams/ax-parity";
 import { ConfluxArch } from "./diagrams/conflux-arch";
 import { TickerArch } from "./diagrams/ticker-arch";
+import { EtlFlow } from "./diagrams/etl-flow";
 import { ConfluxDemo } from "./conflux-demo-loader";
 
 const components = {
@@ -16,6 +17,7 @@ const components = {
   AxParity,
   ConfluxArch,
   TickerArch,
+  EtlFlow,
   ConfluxDemo,
 };
 

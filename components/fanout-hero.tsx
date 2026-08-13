@@ -1,62 +1,72 @@
-const W = 440;
-const H = 292;
+const W = 460;
+const H = 250;
+const GUTTER = 54;
 
 interface Tier {
   y: number;
   n: number;
+  inset: number;
 }
 
 const TIERS: Tier[] = [
-  { y: 38, n: 1 },
-  { y: 116, n: 3 },
-  { y: 194, n: 9 },
-  { y: 250, n: 18 },
+  { y: 30, n: 1, inset: 0 },
+  { y: 100, n: 3, inset: 92 },
+  { y: 170, n: 9, inset: 26 },
+  { y: 222, n: 18, inset: 6 },
 ];
 
-const GUTTER = 52;
-
-function xs(n: number, inset: number) {
+function xs({ n, inset }: Tier) {
   const left = GUTTER + inset;
   const right = W - inset;
   if (n === 1) return [(left + right) / 2];
-  const span = right - left;
-  return Array.from({ length: n }, (_, i) => left + (i * span) / (n - 1));
+  return Array.from({ length: n }, (_, i) => left + (i * (right - left)) / (n - 1));
 }
 
-const INSETS = [0, 96, 30, 8];
+interface Edge {
+  d: string;
+  tier: number;
+  index: number;
+}
 
 /**
- * The hierarchical fan-out, animated: the manifest propagates tier by tier,
- * each layer lighting up after the one above it. Signature work as hero art.
+ * Live view of the hierarchical fan-out: packets leave the source, and each
+ * tier that receives one starts seeding the tier below it. The motion carries
+ * the idea — every receiver becomes a sender — better than a static tree does.
  */
 export function FanoutHero() {
-  const positions = TIERS.map((t, i) => xs(t.n, INSETS[i]));
+  const positions = TIERS.map(xs);
+
+  const edges: Edge[] = [];
+  TIERS.slice(0, -1).forEach((tier, ti) => {
+    const parents = positions[ti];
+    const children = positions[ti + 1];
+    const per = children.length / parents.length;
+    parents.forEach((px, pi) => {
+      children.slice(pi * per, (pi + 1) * per).forEach((cx, ci) => {
+        edges.push({
+          d: `M ${px} ${tier.y} L ${cx} ${TIERS[ti + 1].y}`,
+          tier: ti,
+          index: pi * per + ci,
+        });
+      });
+    });
+  });
 
   return (
-    <div className="relative">
-      <style>{`
-        .fan-edge {
-          stroke-dasharray: 260;
-          stroke-dashoffset: 260;
-          animation: sweep 5.5s ease-in-out infinite;
-        }
-        .fan-node { animation: pulse-node 5.5s ease-in-out infinite; }
-      `}</style>
-
+    <div>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="h-auto w-full"
         role="img"
-        aria-label="Animated diagram: a manifest propagating from one source through successive tiers of workers, each tier seeding the next."
+        aria-label="Live diagram: packets leaving a single source and propagating through tiers of workers, each tier seeding the next until a thousand are reached."
       >
         <defs>
-          <linearGradient id="fan-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#00e5a0" />
-            <stop offset="55%" stopColor="#38bdf8" />
-            <stop offset="100%" stopColor="#38bdf8" />
+          <linearGradient id="fan-edge" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#00e5a0" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.28" />
           </linearGradient>
-          <filter id="fan-glow" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="4" result="b" />
+          <filter id="fan-glow" x="-120%" y="-120%" width="340%" height="340%">
+            <feGaussianBlur stdDeviation="2.4" result="b" />
             <feMerge>
               <feMergeNode in="b" />
               <feMergeNode in="SourceGraphic" />
@@ -64,64 +74,86 @@ export function FanoutHero() {
           </filter>
         </defs>
 
-        {/* edges */}
-        {TIERS.slice(0, -1).map((tier, ti) => {
-          const parents = positions[ti];
-          const children = positions[ti + 1];
-          const per = children.length / parents.length;
-          return parents.flatMap((px, pi) =>
-            children.slice(pi * per, (pi + 1) * per).map((cx, ci) => (
-              <line
-                key={`${ti}-${pi}-${ci}`}
-                className="fan-edge"
-                x1={px}
-                y1={tier.y}
-                x2={cx}
-                y2={TIERS[ti + 1].y}
-                stroke="url(#fan-grad)"
-                strokeWidth={ti === 0 ? 1.5 : ti === 1 ? 1.1 : 0.75}
-                strokeOpacity={ti === 0 ? 0.75 : ti === 1 ? 0.5 : 0.28}
-                style={{ animationDelay: `${ti * 0.55}s` }}
-              />
-            ))
-          );
-        })}
+        {/* static skeleton */}
+        {edges.map((e, i) => (
+          <path
+            key={`e${i}`}
+            d={e.d}
+            stroke="url(#fan-edge)"
+            strokeWidth={e.tier === 0 ? 1.2 : 0.8}
+            fill="none"
+          />
+        ))}
 
-        {/* nodes */}
+        {/* packets in flight — each tier fires after the one above it */}
+        {edges.map((e, i) => (
+          <circle
+            key={`p${i}`}
+            r={e.tier === 0 ? 2.8 : 2}
+            fill={e.tier === 0 ? "#00e5a0" : "#38bdf8"}
+            filter="url(#fan-glow)"
+            className="packet"
+            style={{
+              offsetPath: `path("${e.d}")`,
+              animationDelay: `${e.tier * 1.15 + e.index * 0.045}s`,
+            }}
+          />
+        ))}
+
+        {/* nodes light up as their tier receives */}
         {TIERS.map((tier, ti) =>
           positions[ti].map((x, i) => (
             <circle
-              key={`${ti}-${i}`}
+              key={`n${ti}-${i}`}
               className="fan-node"
               cx={x}
               cy={tier.y}
-              r={ti === 0 ? 8.5 : ti === 1 ? 5 : ti === 2 ? 3 : 2}
-              fill={ti === 0 ? "#00e5a0" : ti === 1 ? "#2fd8b4" : ti === 2 ? "#38bdf8" : "#38bdf8"}
+              r={ti === 0 ? 7 : ti === 1 ? 4.5 : ti === 2 ? 2.8 : 1.9}
+              fill={ti === 0 ? "#00e5a0" : ti === 1 ? "#20d8b8" : "#38bdf8"}
               filter={ti < 2 ? "url(#fan-glow)" : undefined}
-              style={{ animationDelay: `${ti * 0.55 + i * 0.02}s` }}
+              style={{ animationDelay: `${ti * 1.15 + i * 0.03}s` }}
             />
           ))
         )}
 
-        {/* tier labels */}
-        {["1", "×10", "×100", "×1,000"].map((t, i) => (
+        {/* tier gutter */}
+        {["src", "×10", "×100", "×1k"].map((t, i) => (
           <text
             key={t}
-            x={6}
+            x={8}
             y={TIERS[i].y + 3.5}
-            textAnchor="start"
             className="font-mono"
-            fontSize="10"
-            fill="rgba(255,255,255,0.3)"
+            fontSize="9.5"
+            fill="rgba(255,255,255,0.28)"
           >
             {t}
           </text>
         ))}
       </svg>
 
-      <p className="mt-3 text-center text-[11px] text-[color:var(--dim)]">
-        each tier seeds the next — 800 → 8,000 workers
-      </p>
+      {/* readout strip */}
+      <dl
+        className="mt-4 grid grid-cols-3 border-t pt-4 text-center"
+        style={{ borderColor: "var(--line)" }}
+      >
+        {[
+          ["workers", "8,000"],
+          ["tiers", "4"],
+          ["runtime", "<3h"],
+        ].map(([k, v]) => (
+          <div key={k}>
+            <dd className="text-[15px]" style={{ color: "var(--a1)" }}>
+              {v}
+            </dd>
+            <dt
+              className="mt-0.5 text-[10px] uppercase tracking-[0.14em]"
+              style={{ color: "var(--dim)" }}
+            >
+              {k}
+            </dt>
+          </div>
+        ))}
+      </dl>
     </div>
   );
 }
